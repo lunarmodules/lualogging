@@ -79,6 +79,7 @@ function logging.email {
     [domain = <i>string</i>,]
     [headers = <i>table</i>,]
     [logPattern = <i>string</i>,]
+    [timestampPattern = <i>string</i>],
 }
 </pre>
 
@@ -119,6 +120,12 @@ function logging.email {
     A pattern can be specified to control how the message is
     written.<br />
     The default value is <code>"%date %level %message\n"</code>.</li>
+    
+    <li><code>timestampPattern</code>:<br />
+	This is an optional parameter that can be used to specify a date
+	pattern that will be passed to the
+	<a href="http://www.lua.org/manual/5.0/manual.html#libiosys"><code>os.date</code></a>
+	function to create the timestamp for the log message (and message subject).</li>
 </ul>
 
 <h2>Example</h2>

@@ -56,6 +56,7 @@ end
 function logging.rolling_file(params, ...)
 	params = logging.getDeprecatedParams({ "filename", "maxFileSize", "maxBackupIndex", "logPattern" }, params, ...)
 	local logPattern = params.logPattern
+	local timestampPattern = params.timestampPattern
 
 	local obj = {
 		filename = type(params.filename) == "string" and params.filename or "lualogging.log",
@@ -68,7 +69,7 @@ function logging.rolling_file(params, ...)
 		if not f then
 			return nil, msg
 		end
-		local s = logging.prepareLogMsg(logPattern, os.date(), level, message)
+		local s = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
 		f:write(s)
 		return true
 	end)

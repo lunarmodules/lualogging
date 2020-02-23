@@ -71,6 +71,7 @@ to <code>io.stdout</code>.</p>
 <pre class="example">
 function logging.console {
     [logPattern = <i>string</i>],
+    [timestampPattern = <i>string</i>],
 }
 </pre>
 
@@ -79,6 +80,12 @@ function logging.console {
     A pattern can be specified to control how the message is
     written.<br />
     The default value is <code>"%date %level %message\n"</code>.</li>
+    
+    <li><code>timestampPattern</code>:<br />
+	This is an optional parameter that can be used to specify a date
+	pattern that will be passed to the
+	<a href="http://www.lua.org/manual/5.0/manual.html#libiosys"><code>os.date</code></a>
+	function to create the timestamp for the log message.</li>
 </ul>
 
 <h2>Examples</h2>

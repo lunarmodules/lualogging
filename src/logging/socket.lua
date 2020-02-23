@@ -15,9 +15,10 @@ function logging.socket(params, ...)
 	local hostname = params.hostname
 	local port = params.port
 	local logPattern = params.logPattern
+	local timestampPattern = params.timestampPattern
 
 	return logging.new( function(self, level, message)
-		local s = logging.prepareLogMsg(logPattern, os.date(), level, message)
+		local s = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
 
 		local socket, err = socket.connect(hostname, port)
 		if not socket then

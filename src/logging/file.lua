@@ -34,6 +34,7 @@ function logging.file(params, ...)
 	local filename = params.filename
 	local datePattern = params.datePattern
 	local logPattern = params.logPattern
+	local timestampPattern = params.timestampPattern
 
 	if type(filename) ~= "string" then
 		filename = "lualogging.log"
@@ -44,7 +45,7 @@ function logging.file(params, ...)
 		if not f then
 			return nil, msg
 		end
-		local s = logging.prepareLogMsg(logPattern, os.date(), level, message)
+		local s = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
 		f:write(s)
 		return true
 	end)
