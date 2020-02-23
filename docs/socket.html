@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>LuaLogging: A simple API to use logging features in Lua</title>
-    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+    <link rel="stylesheet" href="doc.css" type="text/css"/>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
@@ -11,9 +11,9 @@
 <div id="container">
 
 <div id="product">
-	<div id="product_logo"><a href="http://www.keplerproject.org">
+	<div id="product_logo">
 		<img alt="LuaLogging logo" src="images/lualogging-128.png"/>
-	</a></div>
+	</div>
 	<div id="product_name"><big><strong>LuaLogging</strong></big></div>
 	<div id="product_description">A simple API to use logging features in Lua.  <a href="br/">Portuguese version.</a></div>
 </div> <!-- id="product" -->
@@ -48,13 +48,13 @@
 				<li><a href="file.html">File</a></li>
 				<li><a href="rolling_file.html">Rolling File</a></li>
 				<li><a href="sql.html">SQL</a></li>
-				<li><a href="socket.html">Socket</a></li>
-				<li><strong>Email</strong></li>
+				<li><strong>Socket</strong></li>
+				<li><a href="email.html">Email</a></li>
 			</ul>
 		</li>
-		<li><a href="https://github.com/Neopallium/lualogging">Project</a>
+		<li><a href="https://github.com/Tieske/lualogging">Project</a>
 			<ul>
-				<li><a href="https://github.com/Neopallium/lualogging/issues">Bug Tracker</a></li>
+				<li><a href="https://github.com/Tieske/lualogging/issues">Bug Tracker</a></li>
 			</ul>
 		</li>
 		<li><a href="license.html">License</a></li>
@@ -63,57 +63,26 @@
 
 <div id="content">
 
-<h2>Email appender</h2>
+<h2>Socket appender</h2>
 
-<p>This appender can be used to send log requests through email. One email
-message is sent for each log request.</p>
+This appender can be used to send log requests through a socket.
+Socket appender relies on <a href=
+"http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> to do its
+job.<br />
+Upon each log request a connection is opened, the message is sent
+and the connection is closed. 
 
 <pre class="example">
-function logging.email {
-    from = <i>string</i>,
-    rcpt = <i>string</i> or <i>string-table</i>,
-    [user = <i>string</i>,]
-    [password = <i>string</i>,]
-    [server = <i>string</i>,]
-    [port = <i>number</i>,]
-    [domain = <i>string</i>,]
-    [headers = <i>table</i>,]
-    [logPattern = <i>string</i>,]
-}
+function logging.socket(address, port [,logPattern])
 </pre>
 
 <ul>
-    <li><code>from</code>:<br />
-    The sender of the email message.</li>
-    
-    <li><code>rcpt</code>:<br />
-    The recipient of the email message. A string or a numerically indexed Lua table with strings.</li>
-    
-    <li><code>user</code>:<br />
-    User for authentication.</li>
-    
-    <li><code>password</code>:<br />
-    Password for authentication.</li>
-    
-    <li><code>server</code>:<br />
-    Server to connect to. Default is <code>"localhost"</code>.</li>
+    <li><code>address</code>:<br />
+    Address can be an IP address or a host name for which the log
+    message will be sent.</li>
     
     <li><code>port</code>:<br />
-    Port to connect to. Default is <code>25</code>.</li>
-    
-    <li><code>domain</code>:<br />
-    Domain name used to greet the server. Defaults to the local
-    machine host name.</li>
-    
-    <li><code>headers.to</code>:<br />
-    The recipient of the message, as an extended description.</li>
-    
-    <li><code>headers.from</code>:<br />
-    The sender of the message, as an extended description.</li>
-    
-    <li><code>headers.subject</code>:<br />
-    The subject of the message sent. This can contain patterns like
-    the <code>logPattern</code> parameter.</li>
+    The port must be an integer number in the range [1..64K).</li>
     
     <li><code>logPattern</code>:<br />
     A pattern can be specified to control how the message is
@@ -124,20 +93,19 @@ function logging.email {
 <h2>Example</h2>
 
 <pre class="example">
-require"logging.email"
+require"logging.socket"
 
-local logger = logging.email {
-  rcpt = "mail@host.com",
-  from = "mail@host.com",
-  headers = { 
-    subject = "[%level] logging.email test", 
-  },
-}
+local logger = logging.socket("localhost", 5000)
 
-logger:info("logging.sql test")
+logger:info("logging.socket test")
 logger:debug("debugging...")
 logger:error("error!")
 </pre>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 
 </div> <!-- id="content" -->
 
