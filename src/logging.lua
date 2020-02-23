@@ -125,7 +125,7 @@ function logging.new(append)
 				self[name] = disable_level
 			end
 		end
-		if old_level then
+		if old_level and old_level ~= level then
 			self:log(logging.DEBUG, "Logger: changing loglevel from %s to %s", old_level, level)
 		end
 	end
