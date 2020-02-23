@@ -13,3 +13,6 @@ install:
 	mkdir -p $(LUA_DIR)/logging
 	cp $(LUAS) $(LUA_DIR)/logging
 	cp $(ROOT_LUAS) $(LUA_DIR)
+
+test:
+	cd tests && ./run_tests.sh
