@@ -137,6 +137,11 @@ function logging.new(append)
 		return LOG_MSG(self, level, ...)
 	end
 
+	-- insert log level constants
+	for i=1, MAX_LEVELS do
+		logger[LEVEL[i]] = LEVEL[i]
+	end
+	
 	-- initialize log level.
 	logger:setLevel(logging.DEBUG)
 	return logger
