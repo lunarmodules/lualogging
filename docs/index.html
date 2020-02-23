@@ -123,6 +123,9 @@ LuaLogging can be downloaded from its
     <dd>Added: A new log-level "off" to suspend logging.</dd>
 	<dd>Fix: Restored the log-level constants on the logger object.</dd>
 	<dd>Fix: catch exceptions when formatting log messages.</dd>
+	<dd>Change: creating loggers now always takes a parameters table (consistent
+		across all appenders). The old parameters are now deprecated, but still
+		work for backward compatibility purposes.</dd>
 
     <dt><strong>1.3.0</strong> [5/Mar/2013]</dt>
 

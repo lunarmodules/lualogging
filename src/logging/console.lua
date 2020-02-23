@@ -9,7 +9,10 @@
 
 local logging = require"logging"
 
-function logging.console(logPattern)
+function logging.console(params, ...)
+	params = logging.getDeprecatedParams({ "logPattern" }, params, ...)
+	local logPattern = params.logPattern
+
 	return logging.new( function(self, level, message)
 		io.stdout:write(logging.prepareLogMsg(logPattern, os.date(), level, message))
 		return true

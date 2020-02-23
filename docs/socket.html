@@ -73,12 +73,16 @@ Upon each log request a connection is opened, the message is sent
 and the connection is closed. 
 
 <pre class="example">
-function logging.socket(address, port [,logPattern])
+function logging.socket {
+    hostname = <i>string</i>,
+    port = <i>number</i>,
+    [logPattern = <i>string</i>,]
+}
 </pre>
 
 <ul>
-    <li><code>address</code>:<br />
-    Address can be an IP address or a host name for which the log
+    <li><code>hostname</code>:<br />
+    Hostname can be an IP address or a host name of the server where the log
     message will be sent.</li>
     
     <li><code>port</code>:<br />
@@ -95,7 +99,10 @@ function logging.socket(address, port [,logPattern])
 <pre class="example">
 require"logging.socket"
 
-local logger = logging.socket("localhost", 5000)
+local logger = logging.socket {
+	hostname = "localhost",
+	port = 5000,
+}
 
 logger:info("logging.socket test")
 logger:debug("debugging...")

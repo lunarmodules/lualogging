@@ -29,7 +29,12 @@ local openFileLogger = function (filename, datePattern)
 	end
 end
 
-function logging.file(filename, datePattern, logPattern)
+function logging.file(params, ...)
+	params = logging.getDeprecatedParams({ "filename", "datePattern", "logPattern" }, params, ...)
+	local filename = params.filename
+	local datePattern = params.datePattern
+	local logPattern = params.logPattern
+
 	if type(filename) ~= "string" then
 		filename = "lualogging.log"
 	end

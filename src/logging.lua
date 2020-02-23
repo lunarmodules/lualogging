@@ -207,6 +207,24 @@ local function tostring(value)
 end
 logging.tostring = tostring
 
+-------------------------------------------------------------------------------
+-- Backward compatible parameter handling
+-------------------------------------------------------------------------------
+function logging.getDeprecatedParams(lst, ...)
+	local args = { n = select("#", ...), ...}
+	if type(args[1]) == "table" then
+		-- this is the new format of a single params-table
+		return args[1]
+	end
+
+	local params = {}
+	for i, param_name in ipairs(lst) do
+		params[param_name] = args[i]
+	end
+	return params
+end
+
+
 if _VERSION < 'Lua 5.2' then
 	-- still create 'logging' global for Lua versions < 5.2
 	_G.logging = logging

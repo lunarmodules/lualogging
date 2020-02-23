@@ -70,14 +70,20 @@ uses Lua I/O routines to do its job. The rolling file appender rolls over the lo
 once it has reached a certain size limit. It also mantains a maximum number of log files.</p>
 
 <pre class="example">
-function logging.rolling_file(filename, maxFileSize, [maxBackupIndex], [logPattern])
+function logging.rolling_file {
+    [filename = <i>string</i>,]
+    maxFileSize = <i>number</i>,
+    [maxBackupIndex = <i>number</i>,]
+    [logPattern = <i>string</i>,]
+}
 </pre>
 
 <ul>
     <li><code>filename</code>:<br />
     The name of the file to be written to.<br />
      If the file cannot be opened for appending the logging request
-    returns nil and an error message.</li>
+    returns nil and an error message.<br />
+	The default value is <code>"lualogging.log"</code>.</li>
     
     <li><code>maxFileSize</code>:<br />
     The max size of the file in bytes. Every time the file reaches this size
@@ -103,7 +109,11 @@ function logging.rolling_file(filename, maxFileSize, [maxBackupIndex], [logPatte
 <pre class="example">
 require"logging.rolling_file"
 
-local logger = logging.rolling_file("test.log", 1024, 5, "%Y-%m-%d")
+local logger = logging.rolling_file {
+    filename = "test.log",
+    maxFileSize = 1024,
+    maxBackupIndex = 5,
+}
 
 logger:info("logging.rolling_file test")
 logger:debug("debugging...")

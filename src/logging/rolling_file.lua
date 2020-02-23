@@ -53,15 +53,14 @@ local openRollingFileLogger = function (self)
 end
 
 
-function logging.rolling_file(filename, maxFileSize, maxBackupIndex, logPattern)
-	if type(filename) ~= "string" then
-		filename = "lualogging.log"
-	end
+function logging.rolling_file(params, ...)
+	params = logging.getDeprecatedParams({ "filename", "maxFileSize", "maxBackupIndex", "logPattern" }, params, ...)
+	local logPattern = params.logPattern
 
 	local obj = {
-		filename = filename,
-		maxSize  = maxFileSize,
-		maxIndex = maxBackupIndex or 1
+		filename = type(params.filename) == "string" and params.filename or "lualogging.log",
+		maxSize  = params.maxFileSize,
+		maxIndex = params.maxBackupIndex or 1
 	}
 
 	return logging.new( function(self, level, message)
