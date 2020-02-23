@@ -38,7 +38,7 @@ function logging.sql(params)
 			params.tablename, params.logdatefield, params.loglevelfield,
 			params.logmessagefield, logDate, level, string.gsub(message, "'", "''"))
 
-		local ret, err = pcall(con.execute, con, insert)
+		local ret = pcall(con.execute, con, insert)
 		if not ret then
 			con, err = params.connectionfactory()
 			if not con then

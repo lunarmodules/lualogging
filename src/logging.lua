@@ -141,7 +141,7 @@ function logging.new(append)
 	for i=1, MAX_LEVELS do
 		logger[LEVEL[i]] = LEVEL[i]
 	end
-	
+
 	-- initialize log level.
 	logger:setLevel(logging.DEBUG)
 	return logger
@@ -185,10 +185,10 @@ local function tostring(value)
 			end
 		end
 		table.sort(auxTable)
-	
+
 		str = str..'{'
 		local separator = ""
-		local entry = ""
+		local entry
 		for _, fieldName in ipairs(auxTable) do
 			if ((tonumber(fieldName)) and (tonumber(fieldName) > 0)) then
 				entry = tostring(value[tonumber(fieldName)])

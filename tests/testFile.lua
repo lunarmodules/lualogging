@@ -6,7 +6,7 @@ local mock = {
 	handle = {}
 }
 
-io.open = function (file, mode)
+io.open = function (file, mode)  --luacheck: ignore
 	if (not string.find(file, "^__TEST*")) then
 		return GLOBAL_IO_OPEN(file, mode)
 	end
@@ -24,7 +24,7 @@ io.open = function (file, mode)
 	}
 end
 
-os.date = function (...)
+os.date = function (...)  --luacheck: ignore
 	return mock.date
 end
 
@@ -62,8 +62,8 @@ assert(#mock.handle["__TEST"..mock.date..".log"].lines == 1)
 assert(mock.handle["__TEST"..mock.date..".log"].setvbuf == "line")
 assert(mock.handle["__TEST"..mock.date..".log"].lines[1] == '2008-01-03 INFO {id = "1"}\n')
 
-os.date = GLOBAL_OS_DATE
-io.open = GLOBAL_IO_OPEN
+os.date = GLOBAL_OS_DATE  --luacheck: ignore
+io.open = GLOBAL_IO_OPEN  --luacheck: ignore
 
 print("File Logging OK")
 

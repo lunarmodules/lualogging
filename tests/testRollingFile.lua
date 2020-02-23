@@ -12,7 +12,7 @@ local size = 0
 while size < total_log_size do
 	local data = string.format("Test actual size[%d]", size)
 	logger:debug(data)
-	size = size + string.len(data)
+	size = size + #data
 end
 
 -- lets test if all files where created
