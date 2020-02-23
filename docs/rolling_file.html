@@ -105,7 +105,7 @@ require"logging.rolling_file"
 
 local logger = logging.rolling_file("test.log", 1024, 5, "%Y-%m-%d")
 
-logger:info("logging.file test")
+logger:info("logging.rolling_file test")
 logger:debug("debugging...")
 logger:error("error!")
 </pre>
