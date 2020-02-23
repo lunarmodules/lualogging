@@ -40,9 +40,12 @@ ERROR = "ERROR",
 -- The FATAL level designates very severe error events that will presumably
 -- lead the application to abort
 FATAL = "FATAL",
+
+-- The OFF level designates the logging of nothing at all
+OFF = "OFF",
 }
 
-local LEVEL = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
+local LEVEL = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"}
 local MAX_LEVELS = #LEVEL
 -- make level names to order
 for i=1,MAX_LEVELS do
@@ -116,7 +119,7 @@ function logging.new(append)
 		-- enable/disable levels
 		for i=1,MAX_LEVELS do
 			local name = LEVEL[i]:lower()
-			if i >= order then
+			if i >= order and i ~= MAX_LEVELS then
 				self[name] = LEVEL_FUNCS[i]
 			else
 				self[name] = disable_level
