@@ -49,40 +49,40 @@ local LEVEL = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"}
 local MAX_LEVELS = #LEVEL
 -- make level names to order
 for i=1,MAX_LEVELS do
-	LEVEL[LEVEL[i]] = i
+  LEVEL[LEVEL[i]] = i
 end
 
 -- private log function, with support for formating a complex log message.
 local function LOG_MSG(self, level, fmt, ...)
-	local f_type = type(fmt)
-	if f_type == 'string' then
-		if select('#', ...) > 0 then
-			local status, msg = pcall(format, fmt, ...)
-			if status then
-				return self:append(level, msg)
-			else
-				return self:append(level, "Error formatting log message: " .. msg)
-			end
-		else
-			-- only a single string, no formating needed.
-			return self:append(level, fmt)
-		end
-	elseif f_type == 'function' then
-		-- fmt should be a callable function which returns the message to log
-		return self:append(level, fmt(...))
-	end
-	-- fmt is not a string and not a function, just call tostring() on it.
-	return self:append(level, logging.tostring(fmt))
+  local f_type = type(fmt)
+  if f_type == 'string' then
+    if select('#', ...) > 0 then
+      local status, msg = pcall(format, fmt, ...)
+      if status then
+        return self:append(level, msg)
+      else
+        return self:append(level, "Error formatting log message: " .. msg)
+      end
+    else
+      -- only a single string, no formating needed.
+      return self:append(level, fmt)
+    end
+  elseif f_type == 'function' then
+    -- fmt should be a callable function which returns the message to log
+    return self:append(level, fmt(...))
+  end
+  -- fmt is not a string and not a function, just call tostring() on it.
+  return self:append(level, logging.tostring(fmt))
 end
 
 -- create the proxy functions for each log level.
 local LEVEL_FUNCS = {}
 for i=1,MAX_LEVELS do
-	local level = LEVEL[i]
-	LEVEL_FUNCS[i] = function(self, ...)
-		-- no level checking needed here, this function will only be called if it's level is active.
-		return LOG_MSG(self, level, ...)
-	end
+  local level = LEVEL[i]
+  LEVEL_FUNCS[i] = function(self, ...)
+    -- no level checking needed here, this function will only be called if it's level is active.
+    return LOG_MSG(self, level, ...)
+  end
 end
 
 -- do nothing function for disabled levels.
@@ -90,64 +90,64 @@ local function disable_level() end
 
 -- improved assertion function.
 local function assert(exp, ...)
-	-- if exp is true, we are finished so don't do any processing of the parameters
-	if exp then return exp, ... end
-	-- assertion failed, raise error
-	error(format(...), 2)
+  -- if exp is true, we are finished so don't do any processing of the parameters
+  if exp then return exp, ... end
+  -- assertion failed, raise error
+  error(format(...), 2)
 end
 
 -------------------------------------------------------------------------------
 -- Creates a new logger object
 -- @param append Function used by the logger to append a message with a
---	log-level to the log stream.
+-- log-level to the log stream.
 -- @return Table representing the new logger object.
 -------------------------------------------------------------------------------
 function logging.new(append)
-	if type(append) ~= "function" then
-		return nil, "Appender must be a function."
-	end
+  if type(append) ~= "function" then
+    return nil, "Appender must be a function."
+  end
 
-	local logger = {}
-	logger.append = append
+  local logger = {}
+  logger.append = append
 
-	logger.setLevel = function (self, level)
-		local order = LEVEL[level]
-		assert(order, "undefined level `%s'", _tostring(level))
-		local old_level = self.level
-		self.level = level
-		self.level_order = order
-		-- enable/disable levels
-		for i=1,MAX_LEVELS do
-			local name = LEVEL[i]:lower()
-			if i >= order and i ~= MAX_LEVELS then
-				self[name] = LEVEL_FUNCS[i]
-			else
-				self[name] = disable_level
-			end
-		end
-		if old_level and old_level ~= level then
-			self:log(logging.DEBUG, "Logger: changing loglevel from %s to %s", old_level, level)
-		end
-	end
+  logger.setLevel = function (self, level)
+    local order = LEVEL[level]
+    assert(order, "undefined level `%s'", _tostring(level))
+    local old_level = self.level
+    self.level = level
+    self.level_order = order
+    -- enable/disable levels
+    for i=1,MAX_LEVELS do
+      local name = LEVEL[i]:lower()
+      if i >= order and i ~= MAX_LEVELS then
+        self[name] = LEVEL_FUNCS[i]
+      else
+        self[name] = disable_level
+      end
+    end
+    if old_level and old_level ~= level then
+      self:log(logging.DEBUG, "Logger: changing loglevel from %s to %s", old_level, level)
+    end
+  end
 
-	-- generic log function.
-	logger.log = function (self, level, ...)
-		local order = LEVEL[level]
-		assert(order, "undefined level `%s'", _tostring(level))
-		if order < self.level_order then
-			return
-		end
-		return LOG_MSG(self, level, ...)
-	end
+  -- generic log function.
+  logger.log = function (self, level, ...)
+    local order = LEVEL[level]
+    assert(order, "undefined level `%s'", _tostring(level))
+    if order < self.level_order then
+      return
+    end
+    return LOG_MSG(self, level, ...)
+  end
 
-	-- insert log level constants
-	for i=1, MAX_LEVELS do
-		logger[LEVEL[i]] = LEVEL[i]
-	end
+  -- insert log level constants
+  for i=1, MAX_LEVELS do
+    logger[LEVEL[i]] = LEVEL[i]
+  end
 
-	-- initialize log level.
-	logger:setLevel(logging.DEBUG)
-	return logger
+  -- initialize log level.
+  logger:setLevel(logging.DEBUG)
+  return logger
 end
 
 
@@ -155,12 +155,12 @@ end
 -- Prepares the log message
 -------------------------------------------------------------------------------
 function logging.prepareLogMsg(pattern, dt, level, message)
-	local logMsg = pattern or "%date %level %message\n"
-	message = string.gsub(message, "%%", "%%%%")
-	logMsg = string.gsub(logMsg, "%%date", dt)
-	logMsg = string.gsub(logMsg, "%%level", level)
-	logMsg = string.gsub(logMsg, "%%message", message)
-	return logMsg
+  local logMsg = pattern or "%date %level %message\n"
+  message = string.gsub(message, "%%", "%%%%")
+  logMsg = string.gsub(logMsg, "%%date", dt)
+  logMsg = string.gsub(logMsg, "%%level", level)
+  logMsg = string.gsub(logMsg, "%%message", message)
+  return logMsg
 end
 
 
@@ -170,40 +170,40 @@ end
 -- Converts Table fields in alphabetical order
 -------------------------------------------------------------------------------
 local function tostring(value)
-	local str = ''
+  local str = ''
 
-	if (type(value) ~= 'table') then
-		if (type(value) == 'string') then
-			str = string.format("%q", value)
-		else
-			str = _tostring(value)
-		end
-	else
-		local auxTable = {}
-		for key in pairs(value) do
-			if (tonumber(key) ~= key) then
-				table.insert(auxTable, key)
-			else
-				table.insert(auxTable, tostring(key))
-			end
-		end
-		table.sort(auxTable)
+  if (type(value) ~= 'table') then
+    if (type(value) == 'string') then
+      str = string.format("%q", value)
+    else
+      str = _tostring(value)
+    end
+  else
+    local auxTable = {}
+    for key in pairs(value) do
+      if (tonumber(key) ~= key) then
+        table.insert(auxTable, key)
+      else
+        table.insert(auxTable, tostring(key))
+      end
+    end
+    table.sort(auxTable)
 
-		str = str..'{'
-		local separator = ""
-		local entry
-		for _, fieldName in ipairs(auxTable) do
-			if ((tonumber(fieldName)) and (tonumber(fieldName) > 0)) then
-				entry = tostring(value[tonumber(fieldName)])
-			else
-				entry = fieldName.." = "..tostring(value[fieldName])
-			end
-			str = str..separator..entry
-			separator = ", "
-		end
-		str = str..'}'
-	end
-	return str
+    str = str..'{'
+    local separator = ""
+    local entry
+    for _, fieldName in ipairs(auxTable) do
+      if ((tonumber(fieldName)) and (tonumber(fieldName) > 0)) then
+        entry = tostring(value[tonumber(fieldName)])
+      else
+        entry = fieldName.." = "..tostring(value[fieldName])
+      end
+      str = str..separator..entry
+      separator = ", "
+    end
+    str = str..'}'
+  end
+  return str
 end
 logging.tostring = tostring
 
@@ -211,23 +211,23 @@ logging.tostring = tostring
 -- Backward compatible parameter handling
 -------------------------------------------------------------------------------
 function logging.getDeprecatedParams(lst, ...)
-	local args = { n = select("#", ...), ...}
-	if type(args[1]) == "table" then
-		-- this is the new format of a single params-table
-		return args[1]
-	end
+  local args = { n = select("#", ...), ...}
+  if type(args[1]) == "table" then
+    -- this is the new format of a single params-table
+    return args[1]
+  end
 
-	local params = {}
-	for i, param_name in ipairs(lst) do
-		params[param_name] = args[i]
-	end
-	return params
+  local params = {}
+  for i, param_name in ipairs(lst) do
+    params[param_name] = args[i]
+  end
+  return params
 end
 
 
 if _VERSION < 'Lua 5.2' then
-	-- still create 'logging' global for Lua versions < 5.2
-	_G.logging = logging
+  -- still create 'logging' global for Lua versions < 5.2
+  _G.logging = logging
 end
 
 return logging

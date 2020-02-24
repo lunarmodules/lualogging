@@ -2,30 +2,30 @@ local GLOBAL_OS_DATE = os.date
 local GLOBAL_IO_OPEN = io.open
 
 local mock = {
-	date = nil,
-	handle = {}
+  date = nil,
+  handle = {}
 }
 
 io.open = function (file, mode)  --luacheck: ignore
-	if (not string.find(file, "^__TEST*")) then
-		return GLOBAL_IO_OPEN(file, mode)
-	end
+  if (not string.find(file, "^__TEST*")) then
+    return GLOBAL_IO_OPEN(file, mode)
+  end
 
-	mock.handle[file] = {}
-	mock.handle[file].lines = {}
-	mock.handle[file].mode = mode
-	return {
-		setvbuf = function (_, s)
-			mock.handle[file].setvbuf = s
-		end,
-		write = function (_, s)
-			table.insert(mock.handle[file].lines, s)
-		end,
-	}
+  mock.handle[file] = {}
+  mock.handle[file].lines = {}
+  mock.handle[file].mode = mode
+  return {
+    setvbuf = function (_, s)
+      mock.handle[file].setvbuf = s
+    end,
+    write = function (_, s)
+      table.insert(mock.handle[file].lines, s)
+    end,
+  }
 end
 
 os.date = function (...)  --luacheck: ignore
-	return mock.date
+  return mock.date
 end
 
 local log_file = require "logging.file"

@@ -20,18 +20,18 @@ Release 1.3.0
 
 With LuaRocks:
 
-	$ sudo luarocks install lualogging
+  $ sudo luarocks install lualogging
 
 Latest Git revision
 -------------------
 
 With LuaRocks:
 
-	$ sudo luarocks install https://github.com/Tieske/lualogging/raw/master/lualogging-scm-0.rockspec
+  $ sudo luarocks install https://github.com/Tieske/lualogging/raw/master/lualogging-scm-0.rockspec
 
 With make:
 
-	$ sudo make
+  $ sudo make
 
 
 Guide lines for improved logging performance
@@ -48,8 +48,8 @@ logger:info("Some message prefix: val1='%s', val2=%d", "some string value", 1234
 * For more complex log message formatting:
 
 local function log_callback(val1, val2)
-	-- Do some complex pre-processing of parameters, maybe dump a table to a string.
-	return string.format("Some message prefix: val1='%s', val2=%d", val1, val2)
+  -- Do some complex pre-processing of parameters, maybe dump a table to a string.
+  return string.format("Some message prefix: val1='%s', val2=%d", val1, val2)
 end
 -- function 'log_callback' will only be called if the current log level is "DEBUG"
 logger:debug(log_callback, "some string value", 1234)

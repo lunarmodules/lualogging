@@ -1,17 +1,17 @@
 
 local test = {
-	"generic.lua",
-	"testConsole.lua",
-	"testFile.lua",
-	"testMail.lua",
-	"testSocket.lua",
-	"testSQL.lua",
-	"testRollingFile.lua",
+  "generic.lua",
+  "testConsole.lua",
+  "testFile.lua",
+  "testMail.lua",
+  "testSocket.lua",
+  "testSQL.lua",
+  "testRollingFile.lua",
 }
 
 print ("Start of Logging tests")
 for _, filename in ipairs(test) do
-	dofile(filename)
+  dofile(filename)
 end
 print ("End of Logging tests")
 
