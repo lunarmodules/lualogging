@@ -42,7 +42,7 @@ end
 
 
 tests.log_levels = function()
-  local logger = logging. test { logPattern = "%message", timestampPattern = nil }
+  local logger = logging.test { logPattern = "%message", timestampPattern = nil }
   logger:setLevel(logger.DEBUG)
   -- debug gets logged
   logger:debug("message 1")
@@ -78,6 +78,15 @@ tests.log_levels = function()
   assert(call_count == 3, "Got: " ..  tostring(call_count))
 end
 
+tests.table_serialization = function()
+  local logger = logging.test { logPattern = "%message", timestampPattern = nil }
+
+  logger:debug({1,2,3,4,5,6,7,8,9,10})
+  assert(last_msg == "{1, 10, 2, 3, 4, 5, 6, 7, 8, 9}", "got: " .. tostring(last_msg))
+
+  logger:debug({abc = "cde", "hello", "world", xyz = true, 1, 2, 3})
+  assert(last_msg == '{"hello", "world", 1, 2, 3, abc = "cde", xyz = true}', "got: " .. tostring(last_msg))
+end
 
 
 for name, func in pairs(tests) do
