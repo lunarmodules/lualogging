@@ -1,12 +1,15 @@
 local logging = require "logging"
 local call_count
 local last_msg
+local msgs
 
 function logging.test(params)
   local logPattern = params.logPattern
   local timestampPattern = params.timestampPattern
   return logging.new( function(self, level, message)
     last_msg = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
+    msgs = msgs or {}
+    table.insert(msgs, last_msg)
     --print("----->",last_msg)
     call_count = call_count + 1
     return true
@@ -16,6 +19,7 @@ end
 local function reset()
   call_count = 0
   last_msg = nil
+  msgs = nil
 end
 
 local tests = {}
@@ -34,7 +38,7 @@ tests.deprecated_parameter_handling = function()
   assert(params.next_one == nil)
   assert(params.hello_world == 3)
 
-  local params = logging.getDeprecatedParams(list, 1, nil, 3)
+  params = logging.getDeprecatedParams(list, 1, nil, 3)
   assert(params.param1 == 1)
   assert(params.next_one == nil)
   assert(params.hello_world == 3)
@@ -78,6 +82,7 @@ tests.log_levels = function()
   assert(call_count == 3, "Got: " ..  tostring(call_count))
 end
 
+
 tests.table_serialization = function()
   local logger = logging.test { logPattern = "%message", timestampPattern = nil }
 
@@ -86,6 +91,22 @@ tests.table_serialization = function()
 
   logger:debug({abc = "cde", "hello", "world", xyz = true, 1, 2, 3})
   assert(last_msg == '{"hello", "world", 1, 2, 3, abc = "cde", xyz = true}', "got: " .. tostring(last_msg))
+end
+
+
+tests.print_function = function()
+  local logger = logging.test { logPattern = "%level %message" }
+  local print = logger:getPrint(logger.DEBUG)
+  print("hey", "there", "dude")
+  assert(msgs[1] == "DEBUG hey there dude")
+  print()
+  assert(msgs[2] == "DEBUG ")
+  print("hello\nthere")
+  assert(msgs[3] == "DEBUG hello")
+  assert(msgs[4] == "DEBUG there")
+  print({}, true, nil, 0)
+  assert(msgs[5]:find("table"))
+  assert(msgs[5]:find(" true nil 0$"))
 end
 
 

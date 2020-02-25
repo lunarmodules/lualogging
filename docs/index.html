@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-  
+
 <div id="container">
 
 <div id="product">
@@ -66,11 +66,11 @@
 <p>LuaLogging provides a simple API to use logging features in Lua.
 Its design was based on
 <a href="http://logging.apache.org/log4j/docs/index.html">log4j</a>.
-LuaLogging currently supports, through the use of <em><a href="#appenders">appenders</a></em>, 
+LuaLogging currently supports, through the use of <em><a href="#appenders">appenders</a></em>,
 console, file, email, socket and sql outputs.</p>
 
 <p>
-LuaLogging is free software and uses the same <a href="license.html">license</a> 
+LuaLogging is free software and uses the same <a href="license.html">license</a>
 as Lua 5.1.
 </p>
 
@@ -128,6 +128,8 @@ LuaLogging can be downloaded from its
     work for backward compatibility purposes.</dd>
     <dd>Added: All appenders have a new property <code>timestampPattern</code>
     to specify the format of the timestamp in the log message</dd>
+    <dd>Added: <code>logger:getPrint()</code> function that returns a print-like
+    function, but directs all output to the logger.</dd>
 
     <dt><strong>1.3.0</strong> [5/Mar/2013]</dt>
 
@@ -148,10 +150,10 @@ LuaLogging can be downloaded from its
 
     <dt><strong>1.1.1</strong> [31/Mar/2006]</dt>
     <dd></dd>
-    
+
     <dt><strong>1.1.0</strong> [12/Nov/2004]</dt>
     <dd></dd>
-    
+
     <dt><strong>1.0.0</strong> [02/Jul/2004]</dt>
     <dd></dd>
 </dl>

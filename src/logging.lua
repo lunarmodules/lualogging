@@ -88,6 +88,16 @@ end
 -- do nothing function for disabled levels.
 local function disable_level() end
 
+-- a generic print function that prints to the log
+local function print_to_log(logger, level, ...)
+  local args = { n = select("#", ...), ... }
+  for i = 1, args.n do args[i] = _tostring(args[i]) end
+  args = table.concat(args, " ") .. "\n"
+  for line in args:gmatch("(.-)\n") do
+    logger:log(level, line)
+  end
+end
+
 -- improved assertion function.
 local function assert(exp, ...)
   -- if exp is true, we are finished so don't do any processing of the parameters
@@ -138,6 +148,17 @@ function logging.new(append)
       return
     end
     return LOG_MSG(self, level, ...)
+  end
+
+  -- a print function generator
+  logger.getPrint = function (self, level)
+    local order = LEVEL[level]
+    assert(order, "undefined level `%s'", _tostring(level))
+    return function(...)
+      if order >= self.level_order then
+        print_to_log(self, level, ...)
+      end
+    end
   end
 
   -- insert log level constants
