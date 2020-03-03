@@ -1,10 +1,8 @@
-#!/usr/bin/env lua
-
 package = "lualogging"
-version = "1.3.0-1"
+version = "1.2.0-2"
 source = {
-  url = "git://github.com/Neopallium/lualogging.git",
-  branch = "v1.3.0",
+  url = "git://github.com/keplerproject/lualogging.git",
+  branch = "v1.2.0",
 }
 description = {
   summary = "A simple API to use logging features",
@@ -13,7 +11,7 @@ LuaLogging provides a simple API to use logging features in Lua. Its design was
 based on log4j. LuaLogging currently supports, through the use of appenders,
 console, file, rolling file, email, socket and SQL outputs.
 ]],
-  homepage = "https://github.com/Neopallium/lualogging",
+  homepage = "https://github.com/keplerproject/lualogging",
   license = "MIT/X11",
 }
 dependencies = {

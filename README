@@ -1,6 +1,6 @@
 LuaLogging
 ==========
-http://Tieske.github.com/lualogging/
+http://keplerproject.github.com/lualogging/
 
 LuaLogging provides a simple API to use logging features in Lua.
 Its design was based on log4j. LuaLogging currently supports,
@@ -10,7 +10,7 @@ Current version is 1.3.0. It was developed for Lua 5.1 & 5.2.
 
 LuaLogging is free software and uses the same license as Lua. It is part of the Kepler Project.
 
-Please see docs at http://Tieske.github.com/lualogging/ for more details
+Please see docs at http://keplerproject.github.com/lualogging/ for more details
 
 Installation
 ============
@@ -27,7 +27,7 @@ Latest Git revision
 
 With LuaRocks:
 
-  $ sudo luarocks install https://github.com/Tieske/lualogging/raw/master/lualogging-scm-0.rockspec
+  $ sudo luarocks install https://github.com/keplerproject/lualogging/raw/master/lualogging-scm-0.rockspec
 
 With make:
 
