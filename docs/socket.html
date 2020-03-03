@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-  
+
 <div id="container">
 
 <div id="product">
@@ -25,18 +25,14 @@
   <ul>
     <li><a href="index.html">Home</a>
       <ul>
-        <li><a href="index.html#overview">Overview</a></li>
-        <li><a href="index.html#status">Status</a></li>
         <li><a href="index.html#download">Download</a></li>
         <li><a href="index.html#dependencies">Dependencies</a></li>
         <li><a href="index.html#history">History</a></li>
         <li><a href="index.html#credits">Credits</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
       </ul>
     </li>
     <li><a href="manual.html">Manual</a>
       <ul>
-        <li><a href="manual.html#introduction">Introduction</a></li>
         <li><a href="manual.html#installation">Installation</a></li>
         <li><a href="manual.html#logger">Logger objects</a></li>
         <li><a href="manual.html#examples">Examples</a></li>
@@ -70,7 +66,7 @@ Socket appender relies on <a href=
 "http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a> to do its
 job.<br />
 Upon each log request a connection is opened, the message is sent
-and the connection is closed. 
+and the connection is closed.
 
 <pre class="example">
 function logging.socket {
@@ -85,15 +81,15 @@ function logging.socket {
     <li><code>hostname</code>:<br />
     Hostname can be an IP address or a host name of the server where the log
     message will be sent.</li>
-    
+
     <li><code>port</code>:<br />
     The port must be an integer number in the range [1..64K).</li>
-    
+
     <li><code>logPattern</code>:<br />
     A pattern can be specified to control how the message is
     written.<br />
     The default value is <code>"%date %level %message\n"</code>.</li>
-    
+
     <li><code>timestampPattern</code>:<br />
     This is an optional parameter that can be used to specify a date
     pattern that will be passed to the

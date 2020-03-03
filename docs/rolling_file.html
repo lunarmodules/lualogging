@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-  
+
 <div id="container">
 
 <div id="product">
@@ -25,18 +25,14 @@
   <ul>
     <li><a href="index.html">Home</a>
       <ul>
-        <li><a href="index.html#overview">Overview</a></li>
-        <li><a href="index.html#status">Status</a></li>
         <li><a href="index.html#download">Download</a></li>
         <li><a href="index.html#dependencies">Dependencies</a></li>
         <li><a href="index.html#history">History</a></li>
         <li><a href="index.html#credits">Credits</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
       </ul>
     </li>
     <li><a href="manual.html">Manual</a>
       <ul>
-        <li><a href="manual.html#introduction">Introduction</a></li>
         <li><a href="manual.html#installation">Installation</a></li>
         <li><a href="manual.html#logger">Logger objects</a></li>
         <li><a href="manual.html#examples">Examples</a></li>
@@ -66,7 +62,7 @@
 <h2>Rolling File appender</h2>
 
 <p>The rolling file appender can be used to write log messages to a file. It
-uses Lua I/O routines to do its job. The rolling file appender rolls over the logfile 
+uses Lua I/O routines to do its job. The rolling file appender rolls over the logfile
 once it has reached a certain size limit. It also mantains a maximum number of log files.</p>
 
 <pre class="example">
@@ -85,7 +81,7 @@ function logging.rolling_file {
      If the file cannot be opened for appending the logging request
     returns nil and an error message.<br />
     The default value is <code>"lualogging.log"</code>.</li>
-    
+
     <li><code>maxFileSize</code>:<br />
     The max size of the file in bytes. Every time the file reaches this size
     it will rollover, generating a new clean log file and storing the old log
@@ -94,7 +90,7 @@ function logging.rolling_file {
     Eg. test.log.1 (most recent backup) <br />
         test.log.2 (least recent backup)
     </li>
-    
+
     <li><code>maxBackupIndex</code>:<br />
     The number of backup files that will be generated.
     The default value is <code>1</code>.</li>
@@ -103,7 +99,7 @@ function logging.rolling_file {
     A pattern can be specified to control how the message is
     written.<br />
     The default value is <code>"%date %level %message\n"</code>.</li>
-    
+
     <li><code>timestampPattern</code>:<br />
     This is an optional parameter that can be used to specify a date
     pattern that will be passed to the

@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-  
+
 <div id="container">
 
 <div id="product">
@@ -25,18 +25,14 @@
   <ul>
     <li><a href="index.html">Home</a>
       <ul>
-        <li><a href="index.html#overview">Overview</a></li>
-        <li><a href="index.html#status">Status</a></li>
         <li><a href="index.html#download">Download</a></li>
         <li><a href="index.html#dependencies">Dependencies</a></li>
         <li><a href="index.html#history">History</a></li>
         <li><a href="index.html#credits">Credits</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
       </ul>
     </li>
     <li><a href="manual.html">Manual</a>
       <ul>
-        <li><a href="manual.html#introduction">Introduction</a></li>
         <li><a href="manual.html#installation">Installation</a></li>
         <li><a href="manual.html#logger">Logger objects</a></li>
         <li><a href="manual.html#examples">Examples</a></li>
@@ -86,41 +82,41 @@ function logging.email {
 <ul>
     <li><code>from</code>:<br />
     The sender of the email message.</li>
-    
+
     <li><code>rcpt</code>:<br />
     The recipient of the email message. A string or a numerically indexed Lua table with strings.</li>
-    
+
     <li><code>user</code>:<br />
     User for authentication.</li>
-    
+
     <li><code>password</code>:<br />
     Password for authentication.</li>
-    
+
     <li><code>server</code>:<br />
     Server to connect to. Default is <code>"localhost"</code>.</li>
-    
+
     <li><code>port</code>:<br />
     Port to connect to. Default is <code>25</code>.</li>
-    
+
     <li><code>domain</code>:<br />
     Domain name used to greet the server. Defaults to the local
     machine host name.</li>
-    
+
     <li><code>headers.to</code>:<br />
     The recipient of the message, as an extended description.</li>
-    
+
     <li><code>headers.from</code>:<br />
     The sender of the message, as an extended description.</li>
-    
+
     <li><code>headers.subject</code>:<br />
     The subject of the message sent. This can contain patterns like
     the <code>logPattern</code> parameter.</li>
-    
+
     <li><code>logPattern</code>:<br />
     A pattern can be specified to control how the message is
     written.<br />
     The default value is <code>"%date %level %message\n"</code>.</li>
-    
+
     <li><code>timestampPattern</code>:<br />
     This is an optional parameter that can be used to specify a date
     pattern that will be passed to the
@@ -136,8 +132,8 @@ require"logging.email"
 local logger = logging.email {
   rcpt = "mail@host.com",
   from = "mail@host.com",
-  headers = { 
-    subject = "[%level] logging.email test", 
+  headers = {
+    subject = "[%level] logging.email test",
   },
 }
 
