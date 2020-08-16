@@ -17,18 +17,24 @@ Installation
 
 With LuaRocks:
 
-  $ luarocks install lualogging
+```sh
+luarocks install lualogging
+```
 
 Latest Git revision
 -------------------
 
 With LuaRocks:
 
-  $ luarocks install https://github.com/keplerproject/lualogging/raw/master/lualogging-dev-1.rockspec
+```sh
+luarocks install https://github.com/keplerproject/lualogging/raw/master/lualogging-dev-1.rockspec
+```
 
 With make:
 
-  $ sudo make
+```sh
+sudo make
+```
 
 Copyright
 =========
