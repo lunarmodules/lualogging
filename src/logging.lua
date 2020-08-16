@@ -21,36 +21,31 @@ local logging = {
 _COPYRIGHT = "Copyright (C) 2004-2020 Kepler Project",
 _DESCRIPTION = "A simple API to use logging features in Lua",
 _VERSION = "LuaLogging 1.4.0",
+}
 
+local DEFAULT_LEVELS = {
 -- The DEBUG Level designates fine-grained instring.formational events that are most
 -- useful to debug an application
-DEBUG = "DEBUG",
+"DEBUG",
 
 -- The INFO level designates instring.formational messages that highlight the
 -- progress of the application at coarse-grained level
-INFO = "INFO",
+"INFO",
 
 -- The WARN level designates potentially harmful situations
-WARN = "WARN",
+"WARN",
 
 -- The ERROR level designates error events that might still allow the
 -- application to continue running
-ERROR = "ERROR",
+"ERROR",
 
 -- The FATAL level designates very severe error events that will presumably
 -- lead the application to abort
-FATAL = "FATAL",
+"FATAL",
 
 -- The OFF level designates the logging of nothing at all
-OFF = "OFF",
+"OFF",
 }
-
-local LEVEL = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"}
-local MAX_LEVELS = #LEVEL
--- make level names to order
-for i=1,MAX_LEVELS do
-  LEVEL[LEVEL[i]] = i
-end
 
 -- private log function, with support for formating a complex log message.
 local function LOG_MSG(self, level, fmt, ...)
@@ -73,16 +68,6 @@ local function LOG_MSG(self, level, fmt, ...)
   end
   -- fmt is not a string and not a function, just call tostring() on it.
   return self:append(level, logging.tostring(fmt))
-end
-
--- create the proxy functions for each log level.
-local LEVEL_FUNCS = {}
-for i=1,MAX_LEVELS do
-  local level = LEVEL[i]
-  LEVEL_FUNCS[i] = function(self, ...)
-    -- no level checking needed here, this function will only be called if it's level is active.
-    return LOG_MSG(self, level, ...)
-  end
 end
 
 -- do nothing function for disabled levels.
@@ -110,15 +95,40 @@ end
 -- Creates a new logger object
 -- @param append Function used by the logger to append a message with a
 -- log-level to the log stream.
+-- @param levels optional table of custom logging levels
 -- @return Table representing the new logger object.
 -------------------------------------------------------------------------------
-function logging.new(append)
+function logging.new(append,levels)
   if type(append) ~= "function" then
     return nil, "Appender must be a function."
   end
 
   local logger = {}
   logger.append = append
+	
+	local LEVEL
+	
+	if levels and type(levels) == "table" then
+		LEVEL = levels
+	else
+		LEVEL = DEFAULT_LEVELS
+	end
+
+	local MAX_LEVELS = #LEVEL
+	-- make level names to order
+	for i=1,MAX_LEVELS do
+		LEVEL[LEVEL[i]] = i
+	end
+
+	-- create the proxy functions for each log level.
+	local LEVEL_FUNCS = {}
+	for i=1,MAX_LEVELS do
+		local level = LEVEL[i]
+		LEVEL_FUNCS[i] = function(self, ...)
+			-- no level checking needed here, this function will only be called if it's level is active.
+			return LOG_MSG(self, level, ...)
+		end
+	end
 
   logger.setLevel = function (self, level)
     local order = LEVEL[level]
@@ -136,7 +146,7 @@ function logging.new(append)
       end
     end
     if old_level and old_level ~= level then
-      self:log(logging.DEBUG, "Logger: changing loglevel from %s to %s", old_level, level)
+      self:log(LEVEL[1], "Logger: changing loglevel from %s to %s", old_level, level)
     end
   end
 
@@ -167,7 +177,7 @@ function logging.new(append)
   end
 
   -- initialize log level.
-  logger:setLevel(logging.DEBUG)
+  logger:setLevel(LEVEL[1])
   return logger
 end
 
