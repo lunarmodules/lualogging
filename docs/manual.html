@@ -81,6 +81,10 @@ that will be called on each call to log a message.</p>
     <li><strong>level</strong>: the logging level</li>
     <li><strong>message</strong>: the message to be logged</li>
 </ul>
+<p>The logger constructor also receives an optional second argument which should be an
+array of custom level names (strings). Note that no level name should be one of the reserved names
+in a logger object which are <code>append</code> <code>log</code> <code>setlevel</code> <code>getprint</code>
+(case insensitive)</p>
 
 <h2><a name="installation"></a>Installation</h2>
 
@@ -96,9 +100,11 @@ or alternatively using the <code>Makefile</code>.</p>
 not only strings. When necessary <code>message</code> is converted to a string.</p>
 
 <p>The parameter <code>level</code> can be one of the variables enumerated below.
+If custom levels are defined then they would be the variables enumerated in the custom levels array.
 The values are presented in descending criticality, so if the minimum level is
 defined as <code>logger.WARN</code> then <code>logger.INFO</code> and
-<code>logger.DEBUG</code> level messages are not logged.</p>
+<code>logger.DEBUG</code> level messages are not logged.
+The default set level at startup is <code>logger.DEBUG</code> or the first level enumerated in the custom levels array.</p>
 
 <dl class="reference">
     <dt><strong>logger.DEBUG</strong></dt>

@@ -16,35 +16,34 @@ local pairs = pairs
 local ipairs = ipairs
 
 local logging = {
-
--- Meta information
-_COPYRIGHT = "Copyright (C) 2004-2020 Kepler Project",
-_DESCRIPTION = "A simple API to use logging features in Lua",
-_VERSION = "LuaLogging 1.4.0",
+	-- Meta information
+	_COPYRIGHT = "Copyright (C) 2004-2020 Kepler Project",
+	_DESCRIPTION = "A simple API to use logging features in Lua",
+	_VERSION = "LuaLogging 1.4.1",
 }
 
 local DEFAULT_LEVELS = {
--- The DEBUG Level designates fine-grained instring.formational events that are most
--- useful to debug an application
-"DEBUG",
+	-- The DEBUG Level designates fine-grained instring.formational events that are most
+	-- useful to debug an application
+	"DEBUG",
 
--- The INFO level designates instring.formational messages that highlight the
--- progress of the application at coarse-grained level
-"INFO",
+	-- The INFO level designates instring.formational messages that highlight the
+	-- progress of the application at coarse-grained level
+	"INFO",
 
--- The WARN level designates potentially harmful situations
-"WARN",
+	-- The WARN level designates potentially harmful situations
+	"WARN",
 
--- The ERROR level designates error events that might still allow the
--- application to continue running
-"ERROR",
+	-- The ERROR level designates error events that might still allow the
+	-- application to continue running
+	"ERROR",
 
--- The FATAL level designates very severe error events that will presumably
--- lead the application to abort
-"FATAL",
+	-- The FATAL level designates very severe error events that will presumably
+	-- lead the application to abort
+	"FATAL",
 
--- The OFF level designates the logging of nothing at all
-"OFF",
+	-- The OFF level designates the logging of nothing at all
+	"OFF",
 }
 
 -- private log function, with support for formating a complex log message.
@@ -95,10 +94,11 @@ end
 -- Creates a new logger object
 -- @param append Function used by the logger to append a message with a
 -- log-level to the log stream.
--- @param levels optional table of custom logging levels
+-- @param levels optional array of custom logging levels
 -- @return Table representing the new logger object.
+-- @return String if there was any error setting the custom levels if provided
 -------------------------------------------------------------------------------
-function logging.new(append,levels)
+function logging.new(append, levels)
   if type(append) ~= "function" then
     return nil, "Appender must be a function."
   end
@@ -106,23 +106,47 @@ function logging.new(append,levels)
   local logger = {}
   logger.append = append
 	
-	local LEVEL
+	local LEVEL, levelErr
+	
+	-- Reserved words in logger that should not be in levels
+	local reserved = {
+		append = true,
+		setlevel = true,
+		log = true,
+		getprint = true
+	}
 	
 	if levels and type(levels) == "table" then
-		LEVEL = levels
+		if #levels == 0 then
+			levelErr = "levels array had 0 elements. Setting Default Levels!"
+			LEVEL = DEFAULT_LEVELS
+		else
+			LEVEL = {}
+			-- create a copy of the levels array
+			for i = 1, levels do
+				if reserved[levels[i]:lower()] then
+					levelErr = "levels array has reserved keywords. Setting Default Levels!"
+					break
+				end
+				LEVEL[#LEVEL + 1] = levels[i]:upper()
+			end
+			if levelErr then
+				LEVEL = DEFAULT_LEVELS
+			end
+		end
 	else
 		LEVEL = DEFAULT_LEVELS
 	end
 
 	local MAX_LEVELS = #LEVEL
 	-- make level names to order
-	for i=1,MAX_LEVELS do
+	for i=1, MAX_LEVELS do
 		LEVEL[LEVEL[i]] = i
 	end
 
 	-- create the proxy functions for each log level.
 	local LEVEL_FUNCS = {}
-	for i=1,MAX_LEVELS do
+	for i=1, MAX_LEVELS do
 		local level = LEVEL[i]
 		LEVEL_FUNCS[i] = function(self, ...)
 			-- no level checking needed here, this function will only be called if it's level is active.
@@ -137,7 +161,7 @@ function logging.new(append,levels)
     self.level = level
     self.level_order = order
     -- enable/disable levels
-    for i=1,MAX_LEVELS do
+    for i=1, MAX_LEVELS do
       local name = LEVEL[i]:lower()
       if i >= order and i ~= MAX_LEVELS then
         self[name] = LEVEL_FUNCS[i]
@@ -178,7 +202,7 @@ function logging.new(append,levels)
 
   -- initialize log level.
   logger:setLevel(LEVEL[1])
-  return logger
+  return logger, levelErr
 end
 
 

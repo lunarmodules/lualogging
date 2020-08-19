@@ -55,7 +55,7 @@ function logging.sql(params)
     end
 
     return true
-  end,params.levels)
+  end, params.levels)
 end
 
 return logging.sql
