@@ -10,5 +10,5 @@ logger:detail("string with %4")
 logger:setLevel("INFO2") -- test log level change warning.
 logger:info1("logging.console test")
 
-print("Console Logging OK")
+print("Console Logging with custom levels OK")
 
