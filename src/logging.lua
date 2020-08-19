@@ -103,66 +103,33 @@ function logging.new(append, levels)
     return nil, "Appender must be a function."
   end
 
+  levels = levels or DEFAULT_LEVELS
+  if type(levels) ~= "table" or #levels == 0 then
+    return nil, "levels array must be a non-empty table"
+  end
+
+  local LEVELS = {}
+	local MAX_LEVELS = #levels
+	local LEVEL_FUNCS = {}
+
+  for i, level in ipairs(levels) do
+    level = level:upper()
+    LEVELS[i] = level
+    LEVELS[level] = i
+  end
+
   local logger = {}
   logger.append = append
-	
-	local LEVEL, levelErr
-	
-	-- Reserved words in logger that should not be in levels
-	local reserved = {
-		append = true,
-		setlevel = true,
-		log = true,
-		getprint = true
-	}
-	
-	if levels and type(levels) == "table" then
-		if #levels == 0 then
-			levelErr = "levels array had 0 elements. Setting Default Levels!"
-			LEVEL = DEFAULT_LEVELS
-		else
-			LEVEL = {}
-			-- create a copy of the levels array
-			for i = 1, levels do
-				if reserved[levels[i]:lower()] then
-					levelErr = "levels array has reserved keywords. Setting Default Levels!"
-					break
-				end
-				LEVEL[#LEVEL + 1] = levels[i]:upper()
-			end
-			if levelErr then
-				LEVEL = DEFAULT_LEVELS
-			end
-		end
-	else
-		LEVEL = DEFAULT_LEVELS
-	end
-
-	local MAX_LEVELS = #LEVEL
-	-- make level names to order
-	for i=1, MAX_LEVELS do
-		LEVEL[LEVEL[i]] = i
-	end
-
-	-- create the proxy functions for each log level.
-	local LEVEL_FUNCS = {}
-	for i=1, MAX_LEVELS do
-		local level = LEVEL[i]
-		LEVEL_FUNCS[i] = function(self, ...)
-			-- no level checking needed here, this function will only be called if it's level is active.
-			return LOG_MSG(self, level, ...)
-		end
-	end
 
   logger.setLevel = function (self, level)
-    local order = LEVEL[level]
+    local order = LEVELS[level]
     assert(order, "undefined level `%s'", _tostring(level))
     local old_level = self.level
     self.level = level
     self.level_order = order
     -- enable/disable levels
     for i=1, MAX_LEVELS do
-      local name = LEVEL[i]:lower()
+      local name = LEVELS[i]:lower()
       if i >= order and i ~= MAX_LEVELS then
         self[name] = LEVEL_FUNCS[i]
       else
@@ -170,13 +137,13 @@ function logging.new(append, levels)
       end
     end
     if old_level and old_level ~= level then
-      self:log(LEVEL[1], "Logger: changing loglevel from %s to %s", old_level, level)
+      self:log(LEVELS[1], "Logger: changing loglevel from %s to %s", old_level, level)
     end
   end
 
   -- generic log function.
   logger.log = function (self, level, ...)
-    local order = LEVEL[level]
+    local order = LEVELS[level]
     assert(order, "undefined level `%s'", _tostring(level))
     if order < self.level_order then
       return
@@ -186,7 +153,7 @@ function logging.new(append, levels)
 
   -- a print function generator
   logger.getPrint = function (self, level)
-    local order = LEVEL[level]
+    local order = LEVELS[level]
     assert(order, "undefined level `%s'", _tostring(level))
     return function(...)
       if order >= self.level_order then
@@ -195,14 +162,26 @@ function logging.new(append, levels)
     end
   end
 
+	-- create the proxy functions for each log level.
+	for i=1, MAX_LEVELS do
+		local level = LEVELS[i]
+    if logger[level:lower()] then
+      return nil, "'" .. level .."' is not a proper level name since there is already a property '" .. level:lower() .. "'"
+    end
+		LEVEL_FUNCS[i] = function(self, ...)
+			-- no level checking needed here, this function will only be called if it's level is active.
+			return LOG_MSG(self, level, ...)
+		end
+	end
+
   -- insert log level constants
   for i=1, MAX_LEVELS do
-    logger[LEVEL[i]] = LEVEL[i]
+    logger[LEVELS[i]] = LEVELS[i]
   end
 
   -- initialize log level.
-  logger:setLevel(LEVEL[1])
-  return logger, levelErr
+  logger:setLevel(LEVELS[1])
+  return logger
 end
 
 
