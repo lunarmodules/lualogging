@@ -11,7 +11,7 @@ local logging = require"logging"
 local socket = require"socket"
 
 function logging.socket(params, ...)
-  params = logging.getDeprecatedParams({ "hostname", "port", "logPattern", "levels" }, params, ...)
+  params = logging.getDeprecatedParams({ "hostname", "port", "logPattern" }, params, ...)
   local hostname = params.hostname
   local port = params.port
   local logPattern = params.logPattern
@@ -32,7 +32,7 @@ function logging.socket(params, ...)
     socket:close()
 
     return true
-  end, params.levels)
+  end, params)
 end
 
 return logging.socket

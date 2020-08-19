@@ -13,7 +13,7 @@ function logging.test(params)
     --print("----->",last_msg)
     call_count = call_count + 1
     return true
-  end, params.levels)
+  end, params)
 end
 
 local function reset()

@@ -94,16 +94,17 @@ end
 -- Creates a new logger object
 -- @param append Function used by the logger to append a message with a
 -- log-level to the log stream.
--- @param levels optional array of custom logging levels
+-- @param params optional table with parameters. Only 1 supported;
+-- `levels`: optional array of custom logging levels
 -- @return Table representing the new logger object.
 -- @return String if there was any error setting the custom levels if provided
 -------------------------------------------------------------------------------
-function logging.new(append, levels)
+function logging.new(append, params)
   if type(append) ~= "function" then
     return nil, "Appender must be a function."
   end
 
-  levels = levels or DEFAULT_LEVELS
+  local levels = (params or {}).levels or DEFAULT_LEVELS
   if type(levels) ~= "table" or #levels == 0 then
     return nil, "levels array must be a non-empty table"
   end

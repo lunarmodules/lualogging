@@ -30,7 +30,7 @@ local openFileLogger = function (filename, datePattern)
 end
 
 function logging.file(params, ...)
-  params = logging.getDeprecatedParams({ "filename", "datePattern", "logPattern", "levels" }, params, ...)
+  params = logging.getDeprecatedParams({ "filename", "datePattern", "logPattern" }, params, ...)
   local filename = params.filename
   local datePattern = params.datePattern
   local logPattern = params.logPattern
@@ -48,7 +48,7 @@ function logging.file(params, ...)
     local s = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
     f:write(s)
     return true
-  end, params.levels)
+  end, params)
 end
 
 return logging.file
