@@ -16,41 +16,13 @@ local pairs = pairs
 local ipairs = ipairs
 
 local logging = {
-
--- Meta information
-_COPYRIGHT = "Copyright (C) 2004-2020 Kepler Project",
-_DESCRIPTION = "A simple API to use logging features in Lua",
-_VERSION = "LuaLogging 1.4.0",
-
--- The DEBUG Level designates fine-grained instring.formational events that are most
--- useful to debug an application
-DEBUG = "DEBUG",
-
--- The INFO level designates instring.formational messages that highlight the
--- progress of the application at coarse-grained level
-INFO = "INFO",
-
--- The WARN level designates potentially harmful situations
-WARN = "WARN",
-
--- The ERROR level designates error events that might still allow the
--- application to continue running
-ERROR = "ERROR",
-
--- The FATAL level designates very severe error events that will presumably
--- lead the application to abort
-FATAL = "FATAL",
-
--- The OFF level designates the logging of nothing at all
-OFF = "OFF",
+  -- Meta information
+  _COPYRIGHT = "Copyright (C) 2004-2020 Kepler Project",
+  _DESCRIPTION = "A simple API to use logging features in Lua",
+  _VERSION = "LuaLogging 1.4.0",
 }
 
-local LEVEL = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF"}
-local MAX_LEVELS = #LEVEL
--- make level names to order
-for i=1,MAX_LEVELS do
-  LEVEL[LEVEL[i]] = i
-end
+local DEFAULT_LEVELS = { "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }
 
 -- private log function, with support for formating a complex log message.
 local function LOG_MSG(self, level, fmt, ...)
@@ -73,16 +45,6 @@ local function LOG_MSG(self, level, fmt, ...)
   end
   -- fmt is not a string and not a function, just call tostring() on it.
   return self:append(level, logging.tostring(fmt))
-end
-
--- create the proxy functions for each log level.
-local LEVEL_FUNCS = {}
-for i=1,MAX_LEVELS do
-  local level = LEVEL[i]
-  LEVEL_FUNCS[i] = function(self, ...)
-    -- no level checking needed here, this function will only be called if it's level is active.
-    return LOG_MSG(self, level, ...)
-  end
 end
 
 -- do nothing function for disabled levels.
@@ -110,25 +72,43 @@ end
 -- Creates a new logger object
 -- @param append Function used by the logger to append a message with a
 -- log-level to the log stream.
+-- @param params optional table with parameters. Only 1 supported;
+-- `levels`: optional array of custom logging levels
 -- @return Table representing the new logger object.
+-- @return String if there was any error setting the custom levels if provided
 -------------------------------------------------------------------------------
-function logging.new(append)
+function logging.new(append, params)
   if type(append) ~= "function" then
     return nil, "Appender must be a function."
+  end
+
+  local levels = (params or {}).levels or DEFAULT_LEVELS
+  if type(levels) ~= "table" or #levels == 0 then
+    return nil, "levels array must be a non-empty table"
+  end
+
+  local LEVELS = {}
+  local MAX_LEVELS = #levels
+  local LEVEL_FUNCS = {}
+
+  for i, level in ipairs(levels) do
+    level = level:upper()
+    LEVELS[i] = level
+    LEVELS[level] = i
   end
 
   local logger = {}
   logger.append = append
 
   logger.setLevel = function (self, level)
-    local order = LEVEL[level]
+    local order = LEVELS[level]
     assert(order, "undefined level `%s'", _tostring(level))
     local old_level = self.level
     self.level = level
     self.level_order = order
     -- enable/disable levels
-    for i=1,MAX_LEVELS do
-      local name = LEVEL[i]:lower()
+    for i=1, MAX_LEVELS do
+      local name = LEVELS[i]:lower()
       if i >= order and i ~= MAX_LEVELS then
         self[name] = LEVEL_FUNCS[i]
       else
@@ -136,13 +116,13 @@ function logging.new(append)
       end
     end
     if old_level and old_level ~= level then
-      self:log(logging.DEBUG, "Logger: changing loglevel from %s to %s", old_level, level)
+      self:log(LEVELS[1], "Logger: changing loglevel from %s to %s", old_level, level)
     end
   end
 
   -- generic log function.
   logger.log = function (self, level, ...)
-    local order = LEVEL[level]
+    local order = LEVELS[level]
     assert(order, "undefined level `%s'", _tostring(level))
     if order < self.level_order then
       return
@@ -152,7 +132,7 @@ function logging.new(append)
 
   -- a print function generator
   logger.getPrint = function (self, level)
-    local order = LEVEL[level]
+    local order = LEVELS[level]
     assert(order, "undefined level `%s'", _tostring(level))
     return function(...)
       if order >= self.level_order then
@@ -161,13 +141,25 @@ function logging.new(append)
     end
   end
 
+  -- create the proxy functions for each log level.
+  for i=1, MAX_LEVELS do
+    local level = LEVELS[i]
+    if logger[level:lower()] then
+      return nil, "'" .. level .."' is not a proper level name since there is already a property '" .. level:lower() .. "'"
+    end
+    LEVEL_FUNCS[i] = function(self, ...)
+      -- no level checking needed here, this function will only be called if it's level is active.
+      return LOG_MSG(self, level, ...)
+    end
+  end
+
   -- insert log level constants
   for i=1, MAX_LEVELS do
-    logger[LEVEL[i]] = LEVEL[i]
+    logger[LEVELS[i]] = LEVELS[i]
   end
 
   -- initialize log level.
-  logger:setLevel(logging.DEBUG)
+  logger:setLevel(LEVELS[1])
   return logger
 end
 

@@ -48,7 +48,7 @@ function logging.file(params, ...)
     local s = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
     f:write(s)
     return true
-  end)
+  end, params)
 end
 
 return logging.file
