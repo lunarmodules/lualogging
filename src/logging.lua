@@ -16,35 +16,13 @@ local pairs = pairs
 local ipairs = ipairs
 
 local logging = {
-	-- Meta information
-	_COPYRIGHT = "Copyright (C) 2004-2020 Kepler Project",
-	_DESCRIPTION = "A simple API to use logging features in Lua",
-	_VERSION = "LuaLogging 1.4.1",
+  -- Meta information
+  _COPYRIGHT = "Copyright (C) 2004-2020 Kepler Project",
+  _DESCRIPTION = "A simple API to use logging features in Lua",
+  _VERSION = "LuaLogging 1.4.0",
 }
 
-local DEFAULT_LEVELS = {
-	-- The DEBUG Level designates fine-grained instring.formational events that are most
-	-- useful to debug an application
-	"DEBUG",
-
-	-- The INFO level designates instring.formational messages that highlight the
-	-- progress of the application at coarse-grained level
-	"INFO",
-
-	-- The WARN level designates potentially harmful situations
-	"WARN",
-
-	-- The ERROR level designates error events that might still allow the
-	-- application to continue running
-	"ERROR",
-
-	-- The FATAL level designates very severe error events that will presumably
-	-- lead the application to abort
-	"FATAL",
-
-	-- The OFF level designates the logging of nothing at all
-	"OFF",
-}
+local DEFAULT_LEVELS = { "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }
 
 -- private log function, with support for formating a complex log message.
 local function LOG_MSG(self, level, fmt, ...)
@@ -110,8 +88,8 @@ function logging.new(append, params)
   end
 
   local LEVELS = {}
-	local MAX_LEVELS = #levels
-	local LEVEL_FUNCS = {}
+  local MAX_LEVELS = #levels
+  local LEVEL_FUNCS = {}
 
   for i, level in ipairs(levels) do
     level = level:upper()
@@ -163,17 +141,17 @@ function logging.new(append, params)
     end
   end
 
-	-- create the proxy functions for each log level.
-	for i=1, MAX_LEVELS do
-		local level = LEVELS[i]
+  -- create the proxy functions for each log level.
+  for i=1, MAX_LEVELS do
+    local level = LEVELS[i]
     if logger[level:lower()] then
       return nil, "'" .. level .."' is not a proper level name since there is already a property '" .. level:lower() .. "'"
     end
-		LEVEL_FUNCS[i] = function(self, ...)
-			-- no level checking needed here, this function will only be called if it's level is active.
-			return LOG_MSG(self, level, ...)
-		end
-	end
+    LEVEL_FUNCS[i] = function(self, ...)
+      -- no level checking needed here, this function will only be called if it's level is active.
+      return LOG_MSG(self, level, ...)
+    end
+  end
 
   -- insert log level constants
   for i=1, MAX_LEVELS do

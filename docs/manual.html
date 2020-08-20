@@ -110,6 +110,11 @@ defined as <code>logger.WARN</code> then <code>logger.INFO</code> and
 <code>logger.DEBUG</code> level messages are not logged.
 The default set level at startup is <code>logger.DEBUG</code> or the first level enumerated in the custom levels array.</p>
 
+<h3>Constants</h3>
+
+<p>The following set of constants is dynamically generated from the log-levels.
+The ones listed here are based on the default log-levels:</p>
+
 <dl class="reference">
     <dt><strong>logger.DEBUG</strong></dt>
     <dd>The <em>DEBUG</em> level designates fine-grained informational events that
@@ -133,7 +138,7 @@ The default set level at startup is <code>logger.DEBUG</code> or the first level
     <dt><strong>logger.OFF</strong></dt>
     <dd>The <em>OFF</em> level will stop all log messages.</dd>
 </dl>
-<p>Note: when using custom levels it is strongly adviced to NOT remove levels, but
+<p>Note: when using custom levels it is strongly advised to NOT remove levels, but
   only add to the default set. When using libraries that expect the default ones,
   one would otherwise encounter errors if they are not found.
 </p>
@@ -143,6 +148,20 @@ The default set level at startup is <code>logger.DEBUG</code> or the first level
 <dl class="reference">
     <dt><strong>logger:log (level, [message]|[table]|[format, ...]|[function, ...])</strong></dt>
     <dd>Logs a message with the specified level.</dd>
+
+    <dt><strong>logger:setLevel (level)</strong></dt>
+    <dd>This method sets a minimum level for messages to be logged.</dd>
+
+    <dt><strong>logger:getPrint (level)</strong></dt>
+    <dd>This method returns a print-like function that redirects all output to
+    the logger instead of the console. The <code>level</code> parameter specifies
+    the log-level of the output.</dd>
+</dl>
+
+<p>The following set of methods is dynamically generated from the log-levels.
+The ones listed here are based on the default log-levels:</p>
+
+<dl class="reference">
 
     <dt><strong>logger:debug ([message]|[table]|[format, ...]|[function, ...])</strong></dt>
     <dd>Logs a message with DEBUG level.</dd>
@@ -158,14 +177,6 @@ The default set level at startup is <code>logger.DEBUG</code> or the first level
 
     <dt><strong>logger:fatal ([message]|[table]|[format, ...]|[function, ...])</strong></dt>
     <dd>Logs a message with FATAL level.</dd>
-
-    <dt><strong>logger:setLevel (level)</strong></dt>
-    <dd>This method sets a minimum level for messages to be logged.</dd>
-
-    <dt><strong>logger:getPrint (level)</strong></dt>
-    <dd>This method returns a print-like function that redirects all output to
-    the logger instead of the console. The <code>level</code> parameter specifies
-    the log-level of the output.</dd>
 </dl>
 
 <h2><a name="examples"></a>Examples</h2>
