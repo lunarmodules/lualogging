@@ -29,7 +29,17 @@ local function LOG_MSG(self, level, fmt, ...)
   local f_type = type(fmt)
   if f_type == 'string' then
     if select('#', ...) > 0 then
-      local status, msg = pcall(format, fmt, ...)
+      local function error_handler(err)
+        local r = ''
+        local m = debug.traceback(err, 5)
+        for s in m:gmatch("(.-)\n") do
+          if s:match("%:%d+%:") then
+            r = r .. ' | ' .. s:gsub('\t', '')
+          end
+        end
+        return err .. r
+      end
+      local status, msg = xpcall(format, error_handler, fmt, ...)
       if status then
         return self:append(level, msg)
       else

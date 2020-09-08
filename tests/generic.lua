@@ -147,6 +147,18 @@ tests.print_function = function()
 end
 
 
+tests.formatting = function()
+  local count = 0
+  local logger = logging.test { logPattern = "%level %message" }
+  logger:debug("%s", nil)
+  assert(last_msg:find("string expected, got no value"))
+  assert(last_msg:find("in main chunk"))
+  assert(last_msg:find("in function 'func'"))
+  local _, levels = last_msg:gsub("(|)", function() count = count + 1 end)
+  assert(levels == 3, "got : " .. levels)
+end
+
+
 for name, func in pairs(tests) do
   reset()
   print("generic test: " .. name)
