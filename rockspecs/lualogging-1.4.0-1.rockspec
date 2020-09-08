@@ -1,7 +1,7 @@
 package = "lualogging"
 version = "1.4.0-1"
 source = {
-  url = "git://github.com/keplerproject/lualogging.git",
+  url = "git://github.com/lunarmodules/lualogging.git",
   branch = "v1.4.0",
 }
 description = {
@@ -11,7 +11,7 @@ description = {
     based on log4j. LuaLogging currently supports, through the use of appenders,
     console, file, rolling file, email, socket and SQL outputs.
   ]],
-  homepage = "https://github.com/keplerproject/lualogging",
+  homepage = "https://github.com/lunarmodules/lualogging",
   license = "MIT/X11",
 }
 dependencies = {
