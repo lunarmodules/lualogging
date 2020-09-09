@@ -14,6 +14,7 @@ local error = error
 local format = string.format
 local pairs = pairs
 local ipairs = ipairs
+local unpack = unpack
 
 local logging = {
   -- Meta information
@@ -24,22 +25,25 @@ local logging = {
 
 local DEFAULT_LEVELS = { "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }
 
+local function error_handler(err)
+  local r = ''
+  local m = debug.traceback(err, 5)
+  for s in m:gmatch("(.-)\n") do
+    if s:match("%:%d+%:") and not s:find('logging.lua') then
+      r = r .. ' | ' .. s:gsub('\t', '')
+    end
+  end
+  return err .. r
+end
+
 -- private log function, with support for formating a complex log message.
 local function LOG_MSG(self, level, fmt, ...)
   local f_type = type(fmt)
   if f_type == 'string' then
     if select('#', ...) > 0 then
-      local function error_handler(err)
-        local r = ''
-        local m = debug.traceback(err, 5)
-        for s in m:gmatch("(.-)\n") do
-          if s:match("%:%d+%:") then
-            r = r .. ' | ' .. s:gsub('\t', '')
-          end
-        end
-        return err .. r
-      end
-      local status, msg = xpcall(format, error_handler, fmt, ...)
+      local args = {...}
+      local wrap = function() return format(fmt, unpack(args)) end
+      local status, msg = xpcall(wrap, error_handler)
       if status then
         return self:append(level, msg)
       else
