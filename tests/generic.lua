@@ -155,9 +155,9 @@ tests.format_error_stacktrace = function()
   assert(last_msg == 'DEBUG abc-007')
 
   logger:debug("%s=%s", nil)
-  assert(last_msg:find("bad argument #%d to '(.-)' %(no value%)"))
+  assert(last_msg:find("bad argument #%d to '(.-)'"))
   assert(last_msg:find("in main chunk"))
-  assert(last_msg:find("in function 'func'"))
+  assert(last_msg:find("in %w+ 'func'"))
   local _, levels = last_msg:gsub("(|)", function() count = count + 1 end)
   assert(levels == 3, "got : " .. levels)
 end
