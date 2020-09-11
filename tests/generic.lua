@@ -147,6 +147,22 @@ tests.print_function = function()
 end
 
 
+tests.format_error_stacktrace = function()
+  local count = 0
+  local logger = logging.test { logPattern = "%level %message" }
+
+  logger:debug("%s-%s", 'abc', '007')
+  assert(last_msg == 'DEBUG abc-007')
+
+  logger:debug("%s=%s", nil)
+  assert(last_msg:find("bad argument #%d to '(.-)' %(no value%)"))
+  assert(last_msg:find("in main chunk"))
+  assert(last_msg:find("in function 'func'"))
+  local _, levels = last_msg:gsub("(|)", function() count = count + 1 end)
+  assert(levels == 3, "got : " .. levels)
+end
+
+
 for name, func in pairs(tests) do
   reset()
   print("generic test: " .. name)
