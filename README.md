@@ -1,3 +1,5 @@
+![build status](https://github.com/lunarmodules/lualogging/workflows/test/badge.svg)
+
 LuaLogging
 ==========
 https://lunarmodules.github.io/lualogging/
