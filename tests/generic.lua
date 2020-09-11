@@ -147,15 +147,15 @@ tests.print_function = function()
 end
 
 
-tests.formatting = function()
+tests.format_error_stacktrace = function()
   local count = 0
   local logger = logging.test { logPattern = "%level %message" }
 
   logger:debug("%s-%s", 'abc', '007')
   assert(last_msg == 'DEBUG abc-007')
 
-  logger:debug("%s", nil)
-  assert(last_msg:find("bad argument #2 to 'format' %(no value%)"))
+  logger:debug("%s=%s", nil)
+  assert(last_msg:find("bad argument #%d to '(.-)' %(no value%)"))
   assert(last_msg:find("in main chunk"))
   assert(last_msg:find("in function 'func'"))
   local _, levels = last_msg:gsub("(|)", function() count = count + 1 end)
