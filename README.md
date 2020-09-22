@@ -1,4 +1,4 @@
-![build status](https://github.com/lunarmodules/lualogging/workflows/test/badge.svg)
+[![build status](https://github.com/lunarmodules/lualogging/workflows/test/badge.svg)](https://github.com/lunarmodules/lualogging/actions?query=workflow%3Atest)
 
 LuaLogging
 ==========
