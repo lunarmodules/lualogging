@@ -10,12 +10,24 @@
 
 local logging = require"logging"
 
+local buffer_mode do
+  local dir_separator = _G.package.config:sub(1,1)
+  local is_windows = dir_separator == '\\'
+  if is_windows then
+    -- Windows does not support "line" buffered mode, see
+    -- https://github.com/lunarmodules/lualogging/pull/9
+    buffer_mode = "no"
+  else
+    buffer_mode = "line"
+  end
+end
+
 local function openFile(self)
   self.file = io.open(self.filename, "a")
   if not self.file then
     return nil, string.format("file `%s' could not be opened for writing", self.filename)
   end
-  self.file:setvbuf ("line")
+  self.file:setvbuf(buffer_mode)
   return self.file
 end
 
