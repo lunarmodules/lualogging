@@ -19,7 +19,7 @@ local logging = {
   -- Meta information
   _COPYRIGHT = "Copyright (C) 2004-2021 Kepler Project",
   _DESCRIPTION = "A simple API to use logging features in Lua",
-  _VERSION = "LuaLogging 1.5.0",
+  _VERSION = "LuaLogging 1.5.1",
 }
 
 local LEVELS = { "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }
