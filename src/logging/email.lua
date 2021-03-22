@@ -38,7 +38,7 @@ function logging.email(params)
     end
 
     return true
-  end, params)
+  end)
 end
 
 return logging.email

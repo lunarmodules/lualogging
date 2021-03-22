@@ -82,12 +82,7 @@ that will be called on each call to log a message.</p>
     <li><strong>message</strong>: the message to be logged</li>
 </ul>
 <p>The logger constructor also receives a optional second argument which should
-be a table with parameters. Currently there is only one:</p>
-<ul>
-  <li><strong>levels</strong>: array of custom level names (strings). Levels will
-  be added as ALLCAPS constants, and as lowercase functions (note that level
-  names must not collide with existing properties or an error will be returned)</li>
-</ul>
+be a table with parameters</p>
 
 <h2><a name="installation"></a>Installation</h2>
 
@@ -103,17 +98,12 @@ or alternatively using the <code>Makefile</code>.</p>
 not only strings. When necessary <code>message</code> is converted to a string.</p>
 
 <p>The parameter <code>level</code> can be one of the variables enumerated below.
-If custom levels are defined then they would be the variables enumerated in the
-custom levels array.
 The values are presented in descending criticality, so if the minimum level is
 defined as <code>logger.WARN</code> then <code>logger.INFO</code> and
 <code>logger.DEBUG</code> level messages are not logged.
-The default set level at startup is <code>logger.DEBUG</code> or the first level enumerated in the custom levels array.</p>
+The default set level at startup is <code>logger.DEBUG</code>.</p>
 
 <h3>Constants</h3>
-
-<p>The following set of constants is dynamically generated from the log-levels.
-The ones listed here are based on the default log-levels:</p>
 
 <dl class="reference">
     <dt><strong>logger.DEBUG</strong></dt>
@@ -138,10 +128,6 @@ The ones listed here are based on the default log-levels:</p>
     <dt><strong>logger.OFF</strong></dt>
     <dd>The <em>OFF</em> level will stop all log messages.</dd>
 </dl>
-<p>Note: when using custom levels it is strongly advised to NOT remove levels, but
-  only add to the default set. When using libraries that expect the default ones,
-  one would otherwise encounter errors if they are not found.
-</p>
 
 <h3>Methods</h3>
 
@@ -158,8 +144,7 @@ The ones listed here are based on the default log-levels:</p>
     the log-level of the output.</dd>
 </dl>
 
-<p>The following set of methods is dynamically generated from the log-levels.
-The ones listed here are based on the default log-levels:</p>
+<p>The following set of methods is dynamically generated from the log-levels.</p>
 
 <dl class="reference">
 
@@ -192,11 +177,7 @@ local appender = function(self, level, message)
   return true
 end
 
-local params = {
-  levels = { "Debug", "Info", "Warn", "Error", "Fatal", "Off" },
-}
-
-local logger = Logging.new(appender, params)
+local logger = Logging.new(appender)
 
 logger:setLevel(logger.WARN)
 logger:log(logger.INFO, "sending email")

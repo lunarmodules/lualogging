@@ -84,7 +84,7 @@ function logging.rolling_file(params, ...)
     local s = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
     f:write(s)
     return true
-  end, params)
+  end)
 end
 
 return logging.rolling_file

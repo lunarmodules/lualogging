@@ -13,7 +13,7 @@ function logging.test(params)
     --print("----->",last_msg)
     call_count = call_count + 1
     return true
-  end, params)
+  end)
 end
 
 local function reset()
@@ -25,6 +25,14 @@ end
 local tests = {}
 
 
+
+
+tests.constants_for_lualogging = function()
+  local DEFAULT_LEVELS = { "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }
+  for _, level in ipairs(DEFAULT_LEVELS) do
+    assert(logging[level], "constant logging."..level.." is not defined")
+  end
+end
 
 
 tests.deprecated_parameter_handling = function()
@@ -80,43 +88,6 @@ tests.log_levels = function()
   logger:fatal("message 7")  -- should not change the last message
   assert(last_msg == "message 4", "got: " .. tostring(last_msg))
   assert(call_count == 3, "Got: " ..  tostring(call_count))
-end
-
-
-tests.custom_log_levels = function()
-  -- existing properties are not allowed as level names
-  local custom_levels = { "append", "debug" }
-  local logger, err = logging.test {
-    logPattern = "%message",
-    timestampPattern = nil,
-    levels = custom_levels,
-  }
-  assert(not logger)
-  assert(err:find("'APPEND' is not a proper level name"), "got: " .. tostring(err))
-
-
-  local custom_levels = { "hello", "world" }
-  local logger = logging.test {
-    logPattern = "%message",
-    timestampPattern = nil,
-    levels = custom_levels,
-  }
-  -- generates the levels
-  assert(logger.HELLO == "HELLO", "got: " .. tostring(logger.HELLO))
-  assert(logger.WORLD == "WORLD", "got: " .. tostring(logger.WORLD))
-  -- debug no longer exists
-  local success, err = pcall(function()
-    logger:setLevel(logger.DEBUG)
-  end)
-  assert(not success)
-  assert(err:find("undefined level `nil'"), "got: " .. tostring(err))
-  -- 'hello' exists
-  local success, err = pcall(function()
-    logger:setLevel(logger.HELLO)
-  end)
-  assert(success)
-  assert(err == nil, "got: " .. tostring(err))
-  logger:hello("my message")
 end
 
 

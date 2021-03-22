@@ -22,7 +22,13 @@ local logging = {
   _VERSION = "LuaLogging 1.5.0",
 }
 
-local DEFAULT_LEVELS = { "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }
+local LEVELS = { "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }
+local MAX_LEVELS = #LEVELS
+for i, level in ipairs(LEVELS) do
+  LEVELS[level] = i
+  logging[level] = level
+end
+
 
 local function rewrite_stacktrace()
   -- prettify stack-trace, remove lualogging entries and reformat to 1 line
@@ -85,37 +91,22 @@ end
 -- Creates a new logger object
 -- @param append Function used by the logger to append a message with a
 -- log-level to the log stream.
--- @param params optional table with parameters. Only 1 supported;
--- `levels`: optional array of custom logging levels
 -- @return Table representing the new logger object.
 -- @return String if there was any error setting the custom levels if provided
 -------------------------------------------------------------------------------
-function logging.new(append, params)
+function logging.new(append)
   if type(append) ~= "function" then
     return nil, "Appender must be a function."
   end
 
-  local levels = (params or {}).levels or DEFAULT_LEVELS
-  if type(levels) ~= "table" or #levels == 0 then
-    return nil, "levels array must be a non-empty table"
-  end
-
-  local LEVELS = {}
-  local MAX_LEVELS = #levels
   local LEVEL_FUNCS = {}
-
-  for i, level in ipairs(levels) do
-    level = level:upper()
-    LEVELS[i] = level
-    LEVELS[level] = i
-  end
 
   local logger = {}
   logger.append = append
 
   logger.setLevel = function (self, level)
     local order = LEVELS[level]
-    assert(order, "undefined level `%s'", _tostring(level))
+    assert(order, "undefined level '%s'", _tostring(level))
     local old_level = self.level
     self.level = level
     self.level_order = order

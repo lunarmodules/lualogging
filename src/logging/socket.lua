@@ -32,7 +32,7 @@ function logging.socket(params, ...)
     socket:close()
 
     return true
-  end, params)
+  end)
 end
 
 return logging.socket

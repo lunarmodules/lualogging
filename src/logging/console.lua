@@ -17,7 +17,7 @@ function logging.console(params, ...)
   return logging.new( function(self, level, message)
     io.stdout:write(logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message))
     return true
-  end, params)
+  end)
 end
 
 return logging.console
