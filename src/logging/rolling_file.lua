@@ -56,6 +56,11 @@ local openRollingFileLogger = function (self)
   end
 
   local filesize = self.file:seek("end", 0)
+  if not filesize then
+    self.file:close()
+    self.file = nil
+    return openFile(self)
+  end
 
   if (filesize < self.maxSize) then
     return self.file
