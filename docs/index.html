@@ -115,6 +115,18 @@ downloads page or installed via LuaRocks.
 <h2><a name="history"></a>History</h2>
 
 <dl class="history">
+    <dt><strong>1.6.0</strong> [unreleased]</dt>
+    <dd>Change: <code>logging.prepareLogMsg</code> now takes the date-pattern as
+      a second parameter and no longer a formatted date/time string. So if you
+      call it from a custom appender as <code>prepareLogMsg(logPattern, so.date(timestampPattern), level, message)</code>
+      you can now call it as <code>prepareLogMsg(logPattern, timestampPattern, level, message)</code>.
+      This change only affects you if you have custom appenders.</dd>
+    <dd>Feat: application level defaults. New functions <code>logging.defaultLogPattern()</code>
+      , <code>logging.defaultTimestampPattern()</code>, <code>logging.defaultLevel()</code>, and <code>logging.defaultLogger()</code>
+      can be used to get/set the
+      global application level defaults. Use carefully, this is global state, so
+      only applications should set those, libraries should never.</dd>
+
     <dt><strong>1.5.2</strong> [12/Aug/2021]</dt>
     <dd>Fix: rolling-file, 'seek' can occasionally fail, handle it properly.</dd>
 

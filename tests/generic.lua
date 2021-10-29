@@ -7,7 +7,7 @@ function logging.test(params)
   local logPattern = params.logPattern
   local timestampPattern = params.timestampPattern
   return logging.new( function(self, level, message)
-    last_msg = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
+    last_msg = logging.prepareLogMsg(logPattern, timestampPattern, level, message)
     msgs = msgs or {}
     table.insert(msgs, last_msg)
     --print("----->",last_msg)
