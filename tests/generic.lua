@@ -7,7 +7,7 @@ function logging.test(params)
   local logPattern = params.logPattern
   local timestampPattern = params.timestampPattern
   return logging.new( function(self, level, message)
-    last_msg = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
+    last_msg = logging.prepareLogMsg(logPattern, timestampPattern, level, message)
     msgs = msgs or {}
     table.insert(msgs, last_msg)
     --print("----->",last_msg)
@@ -131,6 +131,37 @@ tests.format_error_stacktrace = function()
   assert(last_msg:find("in %w+ 'func'"))
   local _, levels = last_msg:gsub("(|)", function() count = count + 1 end)
   assert(levels == 3, "got : " .. levels)
+end
+
+
+tests.defaultLogger = function()
+  -- returns a logger
+  assert(logging.defaultLogger(), "expected a logger object to be returned)")
+  local logger = logging.test {}
+  -- setting a default one
+  assert(logging.defaultLogger(logger), "expected a logger object to be returned)")
+  assert(logger == logging.defaultLogger(), "expected my previously set logger to be returned)")
+end
+
+
+tests.defaultLevel = function()
+  -- default level is 'debug'
+  local old_level = logging.defaultLevel()
+  assert(old_level == logging.DEBUG, "expected default to be 'debug'")
+  -- setting level
+  assert(logging.defaultLevel(logging.FATAL) == logging.FATAL, "expected updated log-level")
+  -- new logger uses new default level
+  local logger = logging.test {}
+  logger:error("less than 'fatal', should not be logged")
+  assert(call_count == 0)
+  logger:fatal("should be logged")
+  assert(call_count == 1)
+
+  -- errors on unknown level
+  assert(not pcall(logging.defaultLevel, "unknown level"), "expected an error to be thrown")
+
+  -- restore old default
+  logging.defaultLevel(old_level)
 end
 
 

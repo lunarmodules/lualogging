@@ -75,13 +75,11 @@ function logging.console {
     <li><code>logPattern</code>:<br />
     A pattern can be specified to control how the message is
     written.<br />
-    The default value is <code>"%date %level %message\n"</code>.</li>
+    The default value is taken from <code>logging.defaultLogPattern()</code>.</li>
 
     <li><code>timestampPattern</code>:<br />
-    This is an optional parameter that can be used to specify a date
-    pattern that will be passed to the
-    <a href="https://www.lua.org/manual/5.1/manual.html#pdf-os.date"><code>os.date</code></a>
-    function to create the timestamp for the log message.</li>
+    This is an optional parameter that can be used to specify a date/time formatting
+    in the log message. The default is taken from <code>logging.defaultTimestampPattern()</code>.</li>
 </ul>
 
 <h2>Examples</h2>

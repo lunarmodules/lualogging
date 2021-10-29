@@ -18,7 +18,7 @@ function logging.socket(params, ...)
   local timestampPattern = params.timestampPattern
 
   return logging.new( function(self, level, message)
-    local s = logging.prepareLogMsg(logPattern, os.date(timestampPattern), level, message)
+    local s = logging.prepareLogMsg(logPattern, timestampPattern, level, message)
 
     local socket, err = socket.connect(hostname, port)
     if not socket then
