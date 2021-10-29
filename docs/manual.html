@@ -90,9 +90,83 @@ be a table with parameters</p>
 <p>installation is easiest using LuaRocks; "<code>luarocks install lualogging</code>",
 or alternatively using the <code>Makefile</code>.</p>
 
+<h2><a name="logging"></a>Logging module</h2>
+
+<p>The logging module has a number of global functions:</p>
+<dl class="reference">
+  <dt><strong>logging.new( function )</strong></dt>
+  <dd>Creates a new logger object from a custom 'appender' function. See examples below.
+    The appender function signature is <code>function(self, level, message)</code>.
+  </dd>
+
+  <dt><strong>patt = logging.defaultLogPattern([string])</strong></dt>
+  <dd>Sets the default logPattern (global!) if given.
+    The default is <code>"%date %level %message\n"</code>.
+    Available placeholders in the pattern string are; "%date", "%level", and "%message".
+    Returns the current defaultLogPattern value.
+    </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
+    only applications should.
+  </dd>
+
+  <dt><strong>patt = logging.defaultTimestampPattern([string])</strong></dt>
+  <dd>Sets the default timestampPattern (global!) if given.
+    The default is <code>nil</code>, which results in a system specific date/time format.
+    The pattern should be accepted by the Lua function <a href="https://www.lua.org/manual/5.1/manual.html#pdf-os.date"><code>os.date</code></a> for formatting.
+    Returns the current defaultTimestampPattern value.
+    </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
+    only applications should.
+  </dd>
+
+  <dt><strong>level = logging.defaultLevel([level constant])</strong></dt>
+  <dd>Sets the default log-level (global!) if given. Each new logger object created
+    will start with the log-level as specified by this value.
+    The level parameter must be one of the log-level constants. The default is <code>logging.DEBUG</code>.
+    Returns the current defaultLevel value.
+    </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
+    only applications should.
+  </dd>
+
+  <dt><strong>logger = logging.defaultLogger([logger object])</strong></dt>
+  <dd>Sets the default logger object (global!) if given.
+    The logger parameter must be a LuaLogging logger object. The default is to
+    generate a new <code>console</code> logger on the first call to get the default logger.
+    Returns the current defaultLogger value.
+    </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
+    only applications should. Libraries should get this logger and use it, assuming
+    the application has set it.
+  </dd>
+  <pre class="example">
+  -- library example
+  local log do
+    local ll = package.loaded.logging
+    if ll and type(ll) == "table" and ll.defaultLogger and
+      tostring(ll._VERSION):find("LuaLogging") then
+      -- default LuaLogging logger is available
+      log = ll.defaultLogger()
+    else
+      -- just use a stub logger with only no-op functions
+      local nop = function() end
+      log = setmetatable({}, {
+        __index = function(self, key) self[key] = nop return nop end
+      })
+    end
+  end
+
+  log:debug("starting my library")
+  </pre>
+  </dl>
+
+
 <h2><a name="logger"></a>Logger objects</h2>
 
-<p>A logger object offers the following methods that writes log messages.</p>
+<p>Logger objects are created by loading the 'appender' module, and calling on it. For example:</p>
+<pre class="example">
+  local logger = require("logging.console") {
+    -- options go here (see appenders for options)
+  }
+</pre>
+
+<p>A logger object offers the following methods that write log messages.</p>
 
 <p>For each of the methods below, the parameter <code>message</code> may be any lua value,
 not only strings. When necessary <code>message</code> is converted to a string.</p>

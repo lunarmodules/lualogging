@@ -24,10 +24,10 @@ function logging.email(params)
   local timestampPattern = params.timestampPattern
 
   return logging.new( function(self, level, message)
-    local s = logging.prepareLogMsg(params.logPattern, os.date(timestampPattern), level, message)
+    local s = logging.prepareLogMsg(params.logPattern, timestampPattern, level, message)
     if params.headers.subject then
       params.headers.subject =
-        logging.prepareLogMsg(params.headers.subject, os.date(timestampPattern), level, message)
+        logging.prepareLogMsg(params.headers.subject, timestampPattern, level, message)
     end
     local msg = { headers = params.headers, body = s }
     params.source = smtp.message(msg)

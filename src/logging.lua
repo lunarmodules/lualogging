@@ -29,6 +29,10 @@ for i, level in ipairs(LEVELS) do
   logging[level] = level
 end
 
+local defaultLevel = LEVELS[1]
+local defaultLogPattern = "%date %level %message\n"
+local defaultTimestampPattern = nil
+local defaultLogger = nil
 
 local function rewrite_stacktrace()
   -- prettify stack-trace, remove lualogging entries and reformat to 1 line
@@ -163,7 +167,7 @@ function logging.new(append)
   end
 
   -- initialize log level.
-  logger:setLevel(LEVELS[1])
+  logger:setLevel(defaultLevel)
   return logger
 end
 
@@ -171,15 +175,15 @@ end
 -------------------------------------------------------------------------------
 -- Prepares the log message
 -------------------------------------------------------------------------------
-function logging.prepareLogMsg(pattern, dt, level, message)
-  local logMsg = pattern or "%date %level %message\n"
+function logging.prepareLogMsg(lpattern, dpattern, level, message)
+  local logMsg = lpattern or defaultLogPattern
   message = string.gsub(message, "%%", "%%%%")
-  logMsg = string.gsub(logMsg, "%%date", dt)
+  logMsg = string.gsub(logMsg, "%%date", os.date(dpattern or defaultTimestampPattern))
   logMsg = string.gsub(logMsg, "%%level", level)
+    -- message is user content, substitute last to prevent pattern escaping issues
   logMsg = string.gsub(logMsg, "%%message", message)
   return logMsg
 end
-
 
 -------------------------------------------------------------------------------
 -- Converts a Lua value to a string
@@ -225,9 +229,58 @@ end
 logging.tostring = tostring
 
 -------------------------------------------------------------------------------
+-- Application level defaults
+-------------------------------------------------------------------------------
+function logging.defaultLogPattern(patt)
+  if patt then
+    if type(patt) ~= "string" then
+      error("logPattern must be a string", 2)
+    end
+    defaultLogPattern = patt
+  end
+  return defaultLogPattern
+end
+
+function logging.defaultTimestampPattern(patt)
+  if patt then
+    if type(patt) ~= "string" then
+      error("timestampPattern must be a string", 2)
+    end
+    defaultTimestampPattern = patt
+  end
+  return defaultTimestampPattern
+end
+
+function logging.defaultLevel(level)
+  if level then
+    if not LEVELS[level] then
+      assert(LEVELS[level], "undefined level '%s'", _tostring(level))
+    end
+    defaultLevel = level
+  end
+  return defaultLevel
+end
+
+function logging.defaultLogger(logger)
+  if logger then
+    if type(logger) ~= "table" then
+      error("expected a logger object", 2)
+    end
+    defaultLogger = logger
+  end
+
+  if not defaultLogger then
+    -- no default logger yet, go create it, using the current defaults
+    defaultLogger = require("logging.console")()
+  end
+
+  return defaultLogger
+end
+
+-------------------------------------------------------------------------------
 -- Backward compatible parameter handling
 -------------------------------------------------------------------------------
-function logging.getDeprecatedParams(lst, ...)
+function logging.getDeprecatedParams(lst, ...) -- TODO: remove in next major version
   local args = { n = select("#", ...), ...}
   if type(args[1]) == "table" then
     -- this is the new format of a single params-table
