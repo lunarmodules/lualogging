@@ -282,7 +282,7 @@ function logging.defaultLogger(logger)
 
   if not defaultLogger then
     -- no default logger yet, go create it, using the current defaults
-    defaultLogger = require("logging.console")()
+    defaultLogger = require("logging.console") { destination = "stderr" }
   end
 
   return defaultLogger

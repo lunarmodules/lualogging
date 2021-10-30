@@ -131,7 +131,8 @@ or alternatively using the <code>Makefile</code>.</p>
   <dt><strong>logger = logging.defaultLogger([logger object])</strong></dt>
   <dd>Sets the default logger object (global!) if given.
     The logger parameter must be a LuaLogging logger object. The default is to
-    generate a new <code>console</code> logger on the first call to get the default logger.
+    generate a new <code>console</code> logger (with "destination" set to "stderr")
+    on the first call to get the default logger.
     Returns the current defaultLogger value.
     </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
     only applications should. Libraries should get this logger and use it, assuming
