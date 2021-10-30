@@ -62,12 +62,13 @@
 <h2>Console appender</h2>
 
 <p>Console is the simplest appender. It just writes the log messages
-to <code>io.stdout</code>.</p>
+to <code>io.stdout</code> or <code>io.stderr</code>.</p>
 
 <pre class="example">
 function logging.console {
     [logPattern = <i>string</i>],
     [timestampPattern = <i>string</i>],
+    [destination = "stdout"|"stderr"],
 }
 </pre>
 
@@ -80,6 +81,10 @@ function logging.console {
     <li><code>timestampPattern</code>:<br />
     This is an optional parameter that can be used to specify a date/time formatting
     in the log message. The default is taken from <code>logging.defaultTimestampPattern()</code>.</li>
+
+    <li><code>destination</code>:<br />
+    The destination stream, optional. The value can be either <code>"stdout"</code>,
+    or <code>"stderr"</code>. The default is <code>stdout</code>.</li>
 </ul>
 
 <h2>Examples</h2>
