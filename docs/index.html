@@ -126,6 +126,8 @@ downloads page or installed via LuaRocks.
       can be used to get/set the
       global application level defaults. Use carefully, this is global state, so
       only applications should set those, libraries should never.</dd>
+    <dd>Feat: the <code>logPattern</code> can now have a new placeholder, "%source", which will be
+    replaced by the source filename, line number, and function name from where the log call was made.</dd>
 
     <dt><strong>1.5.2</strong> [12/Aug/2021]</dt>
     <dd>Fix: rolling-file, 'seek' can occasionally fail, handle it properly.</dd>
