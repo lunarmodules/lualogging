@@ -102,7 +102,9 @@ or alternatively using the <code>Makefile</code>.</p>
   <dt><strong>patt = logging.defaultLogPattern([string])</strong></dt>
   <dd>Sets the default logPattern (global!) if given.
     The default is <code>"%date %level %message\n"</code>.
-    Available placeholders in the pattern string are; "%date", "%level", and "%message".
+    Available placeholders in the pattern string are; "%date", "%level", "%message",
+    and "%source". The "%source" placeholder has to lookup debug info, and hence disabled
+    by default (performance), if used it will contain filename, line number, and function name.
     Returns the current defaultLogPattern value.
     </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
     only applications should.

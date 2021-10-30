@@ -175,14 +175,25 @@ end
 -------------------------------------------------------------------------------
 -- Prepares the log message
 -------------------------------------------------------------------------------
-function logging.prepareLogMsg(lpattern, dpattern, level, message)
-  local logMsg = lpattern or defaultLogPattern
-  message = string.gsub(message, "%%", "%%%%")
-  logMsg = string.gsub(logMsg, "%%date", os.date(dpattern or defaultTimestampPattern))
-  logMsg = string.gsub(logMsg, "%%level", level)
-    -- message is user content, substitute last to prevent pattern escaping issues
-  logMsg = string.gsub(logMsg, "%%message", message)
-  return logMsg
+do
+  local function getLine()
+    -- level 5; 1=this, 2=gsub, 3=perpareLogMsg, 4=appender, 5=calling code
+    local info = debug.getinfo(5)
+    return info.short_src..":"..tostring(info.currentline).." in function '"..(info.name or "unknown function").."'"
+  end
+
+  -- TODO: generate function that only updates what is actually in the pattern
+  function logging.prepareLogMsg(lpattern, dpattern, level, message)
+    local logMsg = lpattern or defaultLogPattern
+    message = string.gsub(message, "%%", "%%%%")
+    logMsg = string.gsub(logMsg, "%%date", os.date(dpattern or defaultTimestampPattern))
+    logMsg = string.gsub(logMsg, "%%level", level)
+    logMsg = string.gsub(logMsg, "%%source", getLine)
+
+      -- message is user content, substitute last to prevent pattern escaping issues
+    logMsg = string.gsub(logMsg, "%%message", message)
+    return logMsg
+  end
 end
 
 -------------------------------------------------------------------------------
