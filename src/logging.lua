@@ -175,11 +175,22 @@ end
 -------------------------------------------------------------------------------
 -- Prepares the log message
 -------------------------------------------------------------------------------
+local sourceDebugLevel = 1 -- this will be set dynamically below
+local getSourceLine
+
+function getSourceLine()
+  local info = debug.getinfo(sourceDebugLevel)
+  return info.short_src..":"..tostring(info.currentline).." in function '"..(info.name or "unknown function").."'"
+end
+
+-- TODO: generate function that only updates what is actually in the pattern
 function logging.prepareLogMsg(lpattern, dpattern, level, message)
   local logMsg = lpattern or defaultLogPattern
   message = string.gsub(message, "%%", "%%%%")
   logMsg = string.gsub(logMsg, "%%date", os.date(dpattern or defaultTimestampPattern))
   logMsg = string.gsub(logMsg, "%%level", level)
+  logMsg = string.gsub(logMsg, "%%source", getSourceLine)
+
     -- message is user content, substitute last to prevent pattern escaping issues
   logMsg = string.gsub(logMsg, "%%message", message)
   return logMsg
@@ -298,6 +309,33 @@ end
 if _VERSION < 'Lua 5.2' then
   -- still create 'logging' global for Lua versions < 5.2
   _G.logging = logging
+end
+
+-------------------------------------------------------------------------------
+-- dynamically detect proper source debug level, since this can vary by Lua versions
+-------------------------------------------------------------------------------
+do
+  local detection_logger, test_msg
+
+  local function detect_func() detection_logger:debug("message") end -- This function MUST be on a single line!!
+  local detect_func_info = debug.getinfo(detect_func)
+  local detect_func_match = detect_func_info.short_src..":"..tostring(detect_func_info.linedefined or -999)
+
+  detection_logger = logging.new( function(self, level, message)
+    test_msg = logging.prepareLogMsg("%source", nil, level, message)
+  end)
+
+  while true do
+    if not pcall(detect_func) then
+      getSourceLine = function() return "lualogging debug-level detection failed" end
+      break
+    end
+    if test_msg:find(detect_func_match, 1, true) then
+      break -- found correct level, done
+    end
+    -- move to next level
+    sourceDebugLevel = sourceDebugLevel + 1
+  end
 end
 
 return logging

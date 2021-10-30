@@ -91,6 +91,34 @@ tests.log_levels = function()
 end
 
 
+tests.logPattern = function()
+  local logger = logging.test { logPattern = "%date", timestampPattern = nil }
+  logger:debug("hello")
+  assert(last_msg ~= "%date", "expected '%date' placeholder to be replaced, got: " .. tostring(last_msg))
+  assert(last_msg ~= "", "expected '%date' placeholder to be replaced by a value, got an empty string")
+
+  local logger = logging.test { logPattern = "%level", timestampPattern = nil }
+  logger:fatal("hello")
+  assert(last_msg ~= "%level", "expected '%level' placeholder to be replaced, got: " .. tostring(last_msg))
+  assert(last_msg == "FATAL", "expected '%level' placeholder to be replaced by 'FATAL', got: " .. tostring(last_msg))
+
+  local logger = logging.test { logPattern = "%message", timestampPattern = nil }
+  logger:debug("hello")
+  assert(last_msg ~= "%message", "expected '%message' placeholder to be replaced, got: " .. tostring(last_msg))
+  assert(last_msg == "hello", "expected '%message' placeholder to be replaced by 'hello', got: " .. tostring(last_msg))
+
+  local logger = logging.test { logPattern = "%source", timestampPattern = nil }
+  local function test_func()
+    logger:debug("hello")
+  end
+  test_func()
+  assert(last_msg ~= "%source", "expected '%source' placeholder to be replaced, got: " .. tostring(last_msg))
+  assert(last_msg:find("'test_func'", 1, true), "expected function name in output, got: " .. tostring(last_msg))
+  assert(last_msg:find(":112 ", 1, true), "expected line number in output, got: " .. tostring(last_msg)) -- update hardcoded linenumber when this fails!
+  assert(last_msg:find("generic.lua:", 1, true), "expected filename in output, got: " .. tostring(last_msg))
+end
+
+
 tests.table_serialization = function()
   local logger = logging.test { logPattern = "%message", timestampPattern = nil }
 
