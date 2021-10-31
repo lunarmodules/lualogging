@@ -274,7 +274,8 @@ end
 
 function logging.defaultLogger(logger)
   if logger then
-    if type(logger) ~= "table" then
+    -- check getPrint to protect against accidental call using colon-notation
+    if type(logger) ~= "table" or type(logger.getPrint) ~= "function" then
       error("expected a logger object", 2)
     end
     defaultLogger = logger
