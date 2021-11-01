@@ -30,3 +30,6 @@ exclude_files = {
     --"spec-old-api/fixtures/invalid-module.lua",
 }
 
+files["src/logging/nginx.lua"] = {
+    std = "+ngx_lua"
+}
