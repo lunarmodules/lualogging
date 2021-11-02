@@ -119,11 +119,6 @@ downloads page or installed via LuaRocks.
     <dd><strong>Added</strong>: the <code>logPattern</code> can now be specified for each log-level individually.
     This allows use cases like only adding "%source" on debug level, or injecting ansi-color coding
     in for example the error log-level.</dd>
-    <dd><strong>Change</strong>: <code>logging.prepareLogMsg</code> now takes the date-pattern as
-      a second parameter and no longer a formatted date/time string. So if you
-      call it from a custom appender as <code>prepareLogMsg(logPattern, os.date(timestampPattern), level, message)</code>
-      you can now call it as <code>prepareLogMsg(logPattern, timestampPattern, level, message)</code>.
-      This change only affects you if you have custom appenders.</dd>
     <dd><strong>Added</strong>: application level defaults. New functions <code>logging.defaultLogPatterns()</code>
       , <code>logging.defaultTimestampPattern()</code>, <code>logging.defaultLevel()</code>, and <code>logging.defaultLogger()</code>
       can be used to get/set the

@@ -21,14 +21,15 @@ function logging.email(params)
     return nil, "'rcpt' parameter is required"
   end
 
-  local timestampPattern = params.timestampPattern
+  local timestampPattern = params.timestampPattern or logging.defaultTimestampPattern()
   local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
 
   return logging.new( function(self, level, message)
-    local s = logging.prepareLogMsg(logPatterns[level], timestampPattern, level, message)
+    local dt = os.date(timestampPattern)
+    local s = logging.prepareLogMsg(logPatterns[level], dt, level, message)
     if params.headers.subject then
       params.headers.subject =
-        logging.prepareLogMsg(params.headers.subject, timestampPattern, level, message)
+        logging.prepareLogMsg(params.headers.subject, dt, level, message)
     end
     local msg = { headers = params.headers, body = s }
     params.source = smtp.message(msg)

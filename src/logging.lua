@@ -188,7 +188,7 @@ end
 function logging.prepareLogMsg(lpattern, dpattern, level, message)
   local logMsg = lpattern or defaultLogPatterns[level]
   message = string.gsub(message, "%%", "%%%%")
-  logMsg = string.gsub(logMsg, "%%date", os.date(dpattern or defaultTimestampPattern))
+  logMsg = string.gsub(logMsg, "%%date", dpattern)
   logMsg = string.gsub(logMsg, "%%level", level)
   logMsg = string.gsub(logMsg, "%%source", getSourceLine)
 
@@ -349,7 +349,7 @@ do
   local detect_func_match = detect_func_info.short_src..":"..tostring(detect_func_info.linedefined or -999)
 
   detection_logger = logging.new( function(self, level, message)
-    test_msg = logging.prepareLogMsg("%source", nil, level, message)
+    test_msg = logging.prepareLogMsg("%source", "", level, message)
   end)
 
   while true do
