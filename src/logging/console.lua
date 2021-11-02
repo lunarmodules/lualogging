@@ -26,12 +26,12 @@ local destinations = setmetatable({
 
 function logging.console(params, ...)
   params = logging.getDeprecatedParams({ "logPattern" }, params, ...)
-  local logPattern = params.logPattern
   local timestampPattern = params.timestampPattern
   local destination = destinations[params.destination]
+  local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
 
   return logging.new( function(self, level, message)
-    io[destination]:write(prepareLogMsg(logPattern, timestampPattern, level, message))
+    io[destination]:write(prepareLogMsg(logPatterns[level], timestampPattern, level, message))
     return true
   end)
 end

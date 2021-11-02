@@ -22,9 +22,10 @@ function logging.email(params)
   end
 
   local timestampPattern = params.timestampPattern
+  local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
 
   return logging.new( function(self, level, message)
-    local s = logging.prepareLogMsg(params.logPattern, timestampPattern, level, message)
+    local s = logging.prepareLogMsg(logPatterns[level], timestampPattern, level, message)
     if params.headers.subject then
       params.headers.subject =
         logging.prepareLogMsg(params.headers.subject, timestampPattern, level, message)
