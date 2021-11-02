@@ -5,9 +5,9 @@ local msgs
 
 function logging.test(params)
   local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
-  local timestampPattern = params.timestampPattern
+  local timestampPattern = params.timestampPattern or logging.defaultTimestampPattern()
   return logging.new( function(self, level, message)
-    last_msg = logging.prepareLogMsg(logPatterns[level], timestampPattern, level, message)
+    last_msg = logging.prepareLogMsg(logPatterns[level], os.date(timestampPattern), level, message)
     msgs = msgs or {}
     table.insert(msgs, last_msg)
     --print("----->",last_msg)
