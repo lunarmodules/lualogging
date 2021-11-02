@@ -66,16 +66,18 @@ to <code>io.stdout</code> or <code>io.stderr</code>.</p>
 
 <pre class="example">
 function logging.console {
-    [logPattern = <i>string</i>],
+    [destination = "stdout"|"stderr",]
+
+    [logPattern = <i>string</i>,]
     [logPatterns = {
-      [logging.DEBUG = <i>string</i>],
-      [logging.INFO  = <i>string</i>],
-      [logging.WARN  = <i>string</i>],
-      [logging.ERROR = <i>string</i>],
-      [logging.FATAL = <i>string</i>],
-    }],
-    [timestampPattern = <i>string</i>],
-    [destination = "stdout"|"stderr"],
+      [logging.DEBUG = <i>string</i>,]
+      [logging.INFO  = <i>string</i>,]
+      [logging.WARN  = <i>string</i>,]
+      [logging.ERROR = <i>string</i>,]
+      [logging.FATAL = <i>string</i>,]
+    },]
+    [timestampPattern = <i>string</i>,]
+    [logLevel = <i>log-level-constant</i>,]
 }
 </pre>
 
@@ -101,6 +103,10 @@ function logging.console {
     <li><code>destination</code>:<br />
     The destination stream, optional. The value can be either <code>"stdout"</code>,
     or <code>"stderr"</code>. The default is <code>stdout</code>.</li>
+
+    <li><code>logLevel</code>:<br />
+    The initial log-level to set for the created logger.</li>
+
 </ul>
 
 <h2>Examples</h2>

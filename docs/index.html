@@ -124,7 +124,9 @@ downloads page or installed via LuaRocks.
       can be used to get/set the
       global application level defaults. Use carefully, this is global state, so
       only applications should set those, libraries should not.</dd>
-    <dd><strong>Added</strong>: the <code>logPattern</code> can now have a new placeholder, "%source", which will be
+    <dd><strong>Added</strong>: the included appenders now have an extra parameter to set
+      log-level upon creation; <code>logLevel</code>.</dd>
+      <dd><strong>Added</strong>: the <code>logPattern</code> can now have a new placeholder, "%source", which will be
     replaced by the source filename, line number, and function name from where the log call was made.</dd>
     <dd><strong>Added</strong>: the console logger has a new optional parameter "destination",
       which must be either "stderr" or "stdout" (defaults to "stdout")</dd>

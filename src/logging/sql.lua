@@ -16,6 +16,8 @@ function logging.sql(params)
   params.loglevelfield = params.loglevelfield or "LogLevel"
   params.logmessagefield = params.logmessagefield or "LogMessage"
 
+  local startLevel = params.logLevel or logging.defaultLevel()
+
   if params.connectionfactory == nil or type(params.connectionfactory) ~= "function" then
     return nil, "No specified connection factory function"
   end
@@ -55,7 +57,7 @@ function logging.sql(params)
     end
 
     return true
-  end)
+  end, startLevel)
 end
 
 return logging.sql

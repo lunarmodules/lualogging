@@ -72,7 +72,9 @@ function logging.sql{
     [logdatefield = <i>string</i>,]
     [loglevelfield = <i>string</i>,]
     [logmessagefield = <i>string</i>,]
-    [keepalive = <i>boolean</i>],
+    [keepalive = <i>boolean</i>,]
+
+    [logLevel = <i>log-level-constant</i>,]
 }
 </pre>
 
@@ -103,7 +105,10 @@ function logging.sql{
     message is written, and the connection is closed.<br />
     If the user wants to keep the connection opened he can specify
     <code>keepalive = true</code>.</li>
-</ul>
+
+    <li><code>logLevel</code>:<br />
+    The initial log-level to set for the created logger.</li>
+  </ul>
 
 <h2>Example</h2>
 

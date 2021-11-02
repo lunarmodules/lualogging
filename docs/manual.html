@@ -94,9 +94,11 @@ or alternatively using the <code>Makefile</code>.</p>
 
 <p>The logging module has a number of global functions:</p>
 <dl class="reference">
-  <dt><strong>logging.new( function )</strong></dt>
+  <dt><strong>logging.new( function[, logLevel] )</strong></dt>
   <dd>Creates a new logger object from a custom 'appender' function. See examples below.
-    The appender function signature is <code>function(self, level, message)</code>.
+    The appender function signature is <code>function(self, level, message)</code>. The
+    optional logLevel argument specifies the initial log-level to set (the value must be
+    a valid log-level constant). If omitted defaults to <code>logging.defaultLevel</code>.
   </dd>
 
   <dt><strong>patts = logging.buildLogPatterns([table], [string])</strong></dt>

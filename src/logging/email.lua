@@ -23,6 +23,7 @@ function logging.email(params)
 
   local timestampPattern = params.timestampPattern or logging.defaultTimestampPattern()
   local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
+  local startLevel = params.logLevel or logging.defaultLevel()
 
   return logging.new( function(self, level, message)
     local dt = os.date(timestampPattern)
@@ -40,7 +41,7 @@ function logging.email(params)
     end
 
     return true
-  end)
+  end, startLevel)
 end
 
 return logging.email
