@@ -16,6 +16,7 @@ function logging.socket(params, ...)
   local port = params.port
   local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
   local timestampPattern = params.timestampPattern or logging.defaultTimestampPattern()
+  local startLevel = params.logLevel or logging.defaultLevel()
 
   return logging.new( function(self, level, message)
     local s = logging.prepareLogMsg(logPatterns[level], os.date(timestampPattern), level, message)
@@ -32,7 +33,7 @@ function logging.socket(params, ...)
     socket:close()
 
     return true
-  end)
+  end, startLevel)
 end
 
 return logging.socket

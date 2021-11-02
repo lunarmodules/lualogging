@@ -72,15 +72,17 @@ and the connection is closed.
 function logging.socket {
     hostname = <i>string</i>,
     port = <i>number</i>,
+
     [logPattern = <i>string</i>,]
     [logPatterns = {
-      [logging.DEBUG = <i>string</i>],
-      [logging.INFO  = <i>string</i>],
-      [logging.WARN  = <i>string</i>],
-      [logging.ERROR = <i>string</i>],
-      [logging.FATAL = <i>string</i>],
-    }],
-    [timestampPattern = <i>string</i>],
+      [logging.DEBUG = <i>string</i>,]
+      [logging.INFO  = <i>string</i>,]
+      [logging.WARN  = <i>string</i>,]
+      [logging.ERROR = <i>string</i>,]
+      [logging.FATAL = <i>string</i>,]
+    },]
+    [timestampPattern = <i>string</i>,]
+    [logLevel = <i>log-level-constant</i>,]
 }
 </pre>
 
@@ -109,6 +111,9 @@ function logging.socket {
     <li><code>timestampPattern</code>:<br />
       This is an optional parameter that can be used to specify a date/time formatting
       in the log message. The default is taken from <code>logging.defaultTimestampPattern()</code>.</li>
+
+    <li><code>logLevel</code>:<br />
+      The initial log-level to set for the created logger.</li>
   </ul>
 
 <h2>Example</h2>

@@ -96,13 +96,14 @@ end
 -- Creates a new logger object
 -- @param append Function used by the logger to append a message with a
 -- log-level to the log stream.
+-- @param startLevel log-level to start with
 -- @return Table representing the new logger object.
 -- @return String if there was any error setting the custom levels if provided
 -------------------------------------------------------------------------------
-function logging.new(append)
-  if type(append) ~= "function" then
-    return nil, "Appender must be a function."
-  end
+function logging.new(append, startLevel)
+  assert(type(append) == "function", "Appender must be a function, got: %s.", type(append))
+  startLevel = startLevel or defaultLevel
+  assert(LEVELS[startLevel], "startLevel must be a valid log-level constant if given")
 
   local LEVEL_FUNCS = {}
 
@@ -168,7 +169,7 @@ function logging.new(append)
   end
 
   -- initialize log level.
-  logger:setLevel(defaultLevel)
+  logger:setLevel(startLevel)
   return logger
 end
 

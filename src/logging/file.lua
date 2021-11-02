@@ -47,6 +47,7 @@ function logging.file(params, ...)
   local datePattern = params.datePattern
   local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
   local timestampPattern = params.timestampPattern or logging.defaultTimestampPattern()
+  local startLevel = params.logLevel or logging.defaultLevel()
 
   if type(filename) ~= "string" then
     filename = "lualogging.log"
@@ -60,7 +61,7 @@ function logging.file(params, ...)
     local s = logging.prepareLogMsg(logPatterns[level], os.date(timestampPattern), level, message)
     f:write(s)
     return true
-  end)
+  end, startLevel)
 end
 
 return logging.file
