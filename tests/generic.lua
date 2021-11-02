@@ -4,10 +4,10 @@ local last_msg
 local msgs
 
 function logging.test(params)
-  local logPattern = params.logPattern
+  local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
   local timestampPattern = params.timestampPattern
   return logging.new( function(self, level, message)
-    last_msg = logging.prepareLogMsg(logPattern, timestampPattern, level, message)
+    last_msg = logging.prepareLogMsg(logPatterns[level], timestampPattern, level, message)
     msgs = msgs or {}
     table.insert(msgs, last_msg)
     --print("----->",last_msg)
@@ -52,6 +52,32 @@ tests.deprecated_parameter_handling = function()
   assert(params.hello_world == 3)
 end
 
+tests.buildLogPatterns = function()
+  local check_patterns = function(t)
+    assert(type(t) == "table")
+    assert(t.DEBUG and t.INFO and t.WARN and t.ERROR and t.FATAL)
+    local i = 0
+    for k,v in pairs(t) do i = i + 1 end
+    assert(i == 5)
+  end
+  local t = logging.buildLogPatterns()
+  check_patterns(t)
+  local t = logging.buildLogPatterns(nil, "hello")
+  check_patterns(t)
+  assert(t.DEBUG == "hello")
+  assert(t.FATAL == "hello")
+  local t = logging.buildLogPatterns({}, "hello")
+  check_patterns(t)
+  assert(t.DEBUG == "hello")
+  assert(t.FATAL == "hello")
+  local t = logging.buildLogPatterns({
+    DEBUG = "bye"
+  }, "hello")
+  check_patterns(t)
+  assert(t.DEBUG == "bye")
+  assert(t.INFO == "hello")
+  assert(t.FATAL == "hello")
+end
 
 tests.log_levels = function()
   local logger = logging.test { logPattern = "%message", timestampPattern = nil }
@@ -91,7 +117,7 @@ tests.log_levels = function()
 end
 
 
-tests.logPattern = function()
+tests.logPatterns = function()
   local logger = logging.test { logPattern = "%date", timestampPattern = nil }
   logger:debug("hello")
   assert(last_msg ~= "%date", "expected '%date' placeholder to be replaced, got: " .. tostring(last_msg))
@@ -114,8 +140,21 @@ tests.logPattern = function()
   test_func()
   assert(last_msg ~= "%source", "expected '%source' placeholder to be replaced, got: " .. tostring(last_msg))
   assert(last_msg:find("'test_func'", 1, true), "expected function name in output, got: " .. tostring(last_msg))
-  assert(last_msg:find(":112 ", 1, true), "expected line number in output, got: " .. tostring(last_msg)) -- update hardcoded linenumber when this fails!
+  assert(last_msg:find(":138 ", 1, true), "expected line number in output, got: " .. tostring(last_msg)) -- update hardcoded linenumber when this fails!
   assert(last_msg:find("generic.lua:", 1, true), "expected filename in output, got: " .. tostring(last_msg))
+
+  -- mutiple separate patterns
+  local logger = logging.test {
+    logPattern = "%message",
+    logPatterns = {
+      [logging.DEBUG] = "hello %message"
+    },
+    timestampPattern = nil,
+  }
+  logger:debug("world")
+  assert(last_msg == "hello world", "expected 'hello world', got: " .. tostring(last_msg))
+  logger:error("world")
+  assert(last_msg == "world", "expected 'world', got: " .. tostring(last_msg))
 end
 
 

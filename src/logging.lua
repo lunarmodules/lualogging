@@ -31,6 +31,7 @@ end
 
 local defaultLevel = LEVELS[1]
 local defaultLogPattern = "%date %level %message\n"
+local defaultLogPatterns = nil
 local defaultTimestampPattern = nil
 local defaultLogger = nil
 
@@ -185,7 +186,7 @@ end
 
 -- TODO: generate function that only updates what is actually in the pattern
 function logging.prepareLogMsg(lpattern, dpattern, level, message)
-  local logMsg = lpattern or defaultLogPattern
+  local logMsg = lpattern or defaultLogPatterns[level]
   message = string.gsub(message, "%%", "%%%%")
   logMsg = string.gsub(logMsg, "%%date", os.date(dpattern or defaultTimestampPattern))
   logMsg = string.gsub(logMsg, "%%level", level)
@@ -242,14 +243,20 @@ logging.tostring = tostring
 -------------------------------------------------------------------------------
 -- Application level defaults
 -------------------------------------------------------------------------------
-function logging.defaultLogPattern(patt)
+function logging.defaultLogPatterns(patt)
   if patt then
-    if type(patt) ~= "string" then
-      error("logPattern must be a string", 2)
+    if type(patt) == "string" then
+      patt = logging.buildLogPatterns({}, patt)
     end
-    defaultLogPattern = patt
+    assert(type(patt) ~= "table", "logPatterns must be a string or a table, got: %s", tostring(patt))
+    for _, level in ipairs(LEVELS) do
+      if level ~= "OFF" then
+        assert(type(patt[level]) == "string", "the patterns contains a '%s' value (instead of a string) for level '%s'", type(patt[level]), level)
+      end
+    end
+    defaultLogPatterns = patt
   end
-  return defaultLogPattern
+  return defaultLogPatterns
 end
 
 function logging.defaultTimestampPattern(patt)
@@ -288,6 +295,25 @@ function logging.defaultLogger(logger)
 
   return defaultLogger
 end
+
+--- Returns a table of patterns, indexed by loglevel.
+-- @param patterns (table, optional) table containing logPattern strings per level, defaults to `{}`
+-- @param default (string, optional) the logPattern to be used for levels not yet present in 'patterns'.
+-- @return table, with a logPattern for every log-level constant
+function logging.buildLogPatterns(patterns, default)
+  patterns = patterns or {}
+  assert(type(default) == "string" or type(default) == "nil", "expected default logPattern (2nd argument) to be a string or nil, got: %s", tostring(default))
+  assert(type(patterns) == "table", "expected patterns (1st argument) to be a table or nil, got: %s", tostring(patterns))
+  local target = {}
+  for _, level in ipairs(LEVELS) do
+    if level ~= "OFF" then
+      target[level] = patterns[level] or default or defaultLogPatterns[level]
+    end
+  end
+  return target
+end
+
+defaultLogPatterns = logging.buildLogPatterns({}, defaultLogPattern)
 
 -------------------------------------------------------------------------------
 -- Backward compatible parameter handling

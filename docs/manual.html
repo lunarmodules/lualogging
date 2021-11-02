@@ -99,32 +99,64 @@ or alternatively using the <code>Makefile</code>.</p>
     The appender function signature is <code>function(self, level, message)</code>.
   </dd>
 
-  <dt><strong>patt = logging.defaultLogPattern([string])</strong></dt>
-  <dd>Sets the default logPattern (global!) if given.
-    The default is <code>"%date %level %message\n"</code>.
+  <dt><strong>patts = logging.buildLogPatterns([table], [string])</strong></dt>
+  <dd>Creates a log-patterns table. The returned table will for each level have
+    the logPattern set to 1. the value in the table, or alternatively 2. the
+    string value, or 3. the pattern from the global defaults.</br>
+  </br>
+    Returns a logPatterns table.</br>
+  </br>
+    Example logging source info only on debug-level, and coloring error and fatal
+    messages:
+    <pre class="example">
+local patterns = logging.buildLogPatterns(
+  {
+    [logging.DEBUG] = "%date %level %message (%source)\n"
+    [logging.ERROR] = "%date "..ansi_red.."%level %message"..ansi_reset.."\n"
+    [logging.FATAL] = "%date "..ansi_red.."%level %message"..ansi_reset.."\n"
+  }, "%date %level %message\n"
+)
+      </pre>
+  </dd>
+
+  <dt><strong>patts = logging.defaultLogPatterns([string | table])</strong></dt>
+  <dd>Sets the default logPatterns (global!) if a parameter is given.
+    If the parameter is a string then that string will be used as the pattern for
+    all log-levels. If a table is given, then it must have all log-levels defined
+    with a pattern string. See also <code>logging.buildLogPatterns</code>.</br>
+  </br>
+    The default is <code>"%date %level %message\n"</code> for all log-levels.</br>
+  </br>
     Available placeholders in the pattern string are; "%date", "%level", "%message",
-    and "%source". The "%source" placeholder has to lookup debug info, and hence disabled
-    by default (performance), if used it will contain filename, line number, and function name.
-    Returns the current defaultLogPattern value.
-    </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
+    and "%source". The "%source" placeholder will return filename, line number, and
+    function name.</br>
+  </br>
+    Returns the current defaultLogPatterns value.</br>
+  </br>
+    <em>NOTE:</em> since this is a global setting, libraries should never set it,
     only applications should.
   </dd>
 
   <dt><strong>patt = logging.defaultTimestampPattern([string])</strong></dt>
   <dd>Sets the default timestampPattern (global!) if given.
     The default is <code>nil</code>, which results in a system specific date/time format.
-    The pattern should be accepted by the Lua function <a href="https://www.lua.org/manual/5.1/manual.html#pdf-os.date"><code>os.date</code></a> for formatting.
-    Returns the current defaultTimestampPattern value.
-    </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
+    The pattern should be accepted by the Lua function
+    <a href="https://www.lua.org/manual/5.1/manual.html#pdf-os.date"><code>os.date</code></a> for formatting.</br>
+  </br>
+    Returns the current defaultTimestampPattern value.</br>
+  </br>
+    <em>NOTE:</em> since this is a global setting, libraries should never set it,
     only applications should.
   </dd>
 
   <dt><strong>level = logging.defaultLevel([level constant])</strong></dt>
   <dd>Sets the default log-level (global!) if given. Each new logger object created
     will start with the log-level as specified by this value.
-    The level parameter must be one of the log-level constants. The default is <code>logging.DEBUG</code>.
-    Returns the current defaultLevel value.
-    </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
+    The level parameter must be one of the log-level constants. The default is <code>logging.DEBUG</code>.</br>
+  </br>
+    Returns the current defaultLevel value.</br>
+  </br>
+    <em>NOTE:</em> since this is a global setting, libraries should never set it,
     only applications should.
   </dd>
 
@@ -132,31 +164,33 @@ or alternatively using the <code>Makefile</code>.</p>
   <dd>Sets the default logger object (global!) if given.
     The logger parameter must be a LuaLogging logger object. The default is to
     generate a new <code>console</code> logger (with "destination" set to "stderr")
-    on the first call to get the default logger.
-    Returns the current defaultLogger value.
-    </BR><em>NOTE:</em> since this is a global setting, libraries should never set it,
+    on the first call to get the default logger.</br>
+  </br>
+    Returns the current defaultLogger value.</br>
+  </br>
+    <em>NOTE:</em> since this is a global setting, libraries should never set it,
     only applications should. Libraries should get this logger and use it, assuming
     the application has set it.
-  </dd>
-  <pre class="example">
-  -- library example
-  local log do
-    local ll = package.loaded.logging
-    if ll and type(ll) == "table" and ll.defaultLogger and
-      tostring(ll._VERSION):find("LuaLogging") then
-      -- default LuaLogging logger is available
-      log = ll.defaultLogger()
-    else
-      -- just use a stub logger with only no-op functions
-      local nop = function() end
-      log = setmetatable({}, {
-        __index = function(self, key) self[key] = nop return nop end
-      })
-    end
+    <pre class="example">
+-- library example
+local log do
+  local ll = package.loaded.logging
+  if ll and type(ll) == "table" and ll.defaultLogger and
+    tostring(ll._VERSION):find("LuaLogging") then
+    -- default LuaLogging logger is available
+    log = ll.defaultLogger()
+  else
+    -- just use a stub logger with only no-op functions
+    local nop = function() end
+    log = setmetatable({}, {
+      __index = function(self, key) self[key] = nop return nop end
+    })
   end
+end
 
-  log:debug("starting my library")
+log:debug("starting my library")
   </pre>
+  </dd>
   </dl>
 
 

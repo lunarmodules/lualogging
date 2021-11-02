@@ -14,11 +14,11 @@ function logging.socket(params, ...)
   params = logging.getDeprecatedParams({ "hostname", "port", "logPattern" }, params, ...)
   local hostname = params.hostname
   local port = params.port
-  local logPattern = params.logPattern
+  local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
   local timestampPattern = params.timestampPattern
 
   return logging.new( function(self, level, message)
-    local s = logging.prepareLogMsg(logPattern, timestampPattern, level, message)
+    local s = logging.prepareLogMsg(logPatterns[level], timestampPattern, level, message)
 
     local socket, err = socket.connect(hostname, port)
     if not socket then

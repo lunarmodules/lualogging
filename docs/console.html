@@ -67,16 +67,32 @@ to <code>io.stdout</code> or <code>io.stderr</code>.</p>
 <pre class="example">
 function logging.console {
     [logPattern = <i>string</i>],
+    [logPatterns = {
+      [logging.DEBUG = <i>string</i>],
+      [logging.INFO  = <i>string</i>],
+      [logging.WARN  = <i>string</i>],
+      [logging.ERROR = <i>string</i>],
+      [logging.FATAL = <i>string</i>],
+    }],
     [timestampPattern = <i>string</i>],
     [destination = "stdout"|"stderr"],
 }
 </pre>
 
 <ul>
+  <li><code>logPatterns</code>:<br />
+    A table with logPattern strings indexed by the log-levels.
+    A logPattern specifies how the message is written.<br />
+    If this parameter is omitted, a patterns table will be created with the
+    parameter <code>logPattern</code> as the default value for each log-level.
+    If <code>logPattern</code> also is omitted then each level will fall back to
+    the current default setting, see <code>logging.defaultLogPatterns</code>.
+  </li>
+
     <li><code>logPattern</code>:<br />
-    A pattern can be specified to control how the message is
-    written.<br />
-    The default value is taken from <code>logging.defaultLogPattern()</code>.</li>
+      This value will be used as the default value for each log-level that was
+      omitted in <code>logPatterns</code>.
+    </li>
 
     <li><code>timestampPattern</code>:<br />
     This is an optional parameter that can be used to specify a date/time formatting
