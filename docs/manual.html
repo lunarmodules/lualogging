@@ -129,9 +129,9 @@ local patterns = logging.buildLogPatterns(
   </br>
     The default is <code>"%date %level %message\n"</code> for all log-levels.</br>
   </br>
-    Available placeholders in the pattern string are; "%date", "%level", "%message",
-    and "%source". The "%source" placeholder will return filename, line number, and
-    function name.</br>
+    Available placeholders in the pattern string are; <code>"%date"</code>, <code>"%level"</code>, <code>"%message"</code>,
+    <code>"%file"</code>, <code>"%line"</code>, <code>"%function"</code> and <code>"%source"</code>. The <code>"%source"</code> placeholder evaluates
+    to <code>"%file:%line in function'%function'"</code>.</br>
   </br>
     Returns the current defaultLogPatterns value.</br>
   </br>

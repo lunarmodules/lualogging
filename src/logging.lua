@@ -178,24 +178,65 @@ end
 -- Prepares the log message
 -------------------------------------------------------------------------------
 local sourceDebugLevel = 1 -- this will be set dynamically below
-local getSourceLine
+local getDebugInfoLine = "local info = debug.getinfo(%d)"
 
-function getSourceLine()
-  local info = debug.getinfo(sourceDebugLevel)
-  return info.short_src..":"..tostring(info.currentline).." in function '"..(info.name or "unknown function").."'"
+function logging.compilePattern(pattern)
+  pattern = string.format("%q", pattern)
+
+  -- replace %source by its components first
+  pattern = pattern:gsub("%%source", "%%file:%%line in function '%%function'")
+
+  local placeholders = {
+    ["date"] = false,
+    ["level"] = false,
+    ["message"] = false,
+    -- truthy: requires debug info to be fetched first
+    ["file"] = "info.short_src",
+    ["line"] = "info.currentline",
+    ["function"] = '(info.name or "unknown function")',
+  }
+  local inject_info = false
+  for placeholder, needs_info in pairs(placeholders) do
+    local count
+    pattern, count = pattern:gsub("%%"..placeholder, '"..'..(needs_info or placeholder)..'.."')
+    inject_info = inject_info or (count>0 and needs_info)
+  end
+  -- cleanup start & end
+  if pattern:sub(1, 4) == '""..' then
+    pattern = pattern:sub(5, -1)
+  end
+  if pattern:sub(-4, -1) == '..""' then
+    pattern = pattern:sub(1, -5)
+  end
+  -- build function
+  local func = [[
+  return function(date, level, message)
+      ]]..(inject_info and getDebugInfoLine:format(sourceDebugLevel) or "")..[[
+
+      return ]]..pattern..[[
+
+    end]]
+
+  return (loadstring or load)(func, "lualogging_generated_formatter")()
 end
 
--- TODO: generate function that only updates what is actually in the pattern
-function logging.prepareLogMsg(lpattern, dpattern, level, message)
-  local logMsg = lpattern or defaultLogPatterns[level]
-  message = string.gsub(message, "%%", "%%%%")
-  logMsg = string.gsub(logMsg, "%%date", dpattern)
-  logMsg = string.gsub(logMsg, "%%level", level)
-  logMsg = string.gsub(logMsg, "%%source", getSourceLine)
+local clearCompiledCache
+do
+  local cache = setmetatable({}, {
+    __index = function(self, pattern)
+      -- pattern wasn't found in cache, compile now, and cache format-function
+      self[pattern] = logging.compilePattern(pattern)
+      return self[pattern]
+    end
+  })
 
-    -- message is user content, substitute last to prevent pattern escaping issues
-  logMsg = string.gsub(logMsg, "%%message", message)
-  return logMsg
+  function clearCompiledCache()
+    for k in pairs(cache) do cache[k] = nil end
+  end
+
+  function logging.prepareLogMsg(lpattern, dpattern, level, message)
+    return cache[lpattern](dpattern, level, message)
+  end
 end
 
 -------------------------------------------------------------------------------
@@ -334,11 +375,6 @@ function logging.getDeprecatedParams(lst, ...) -- TODO: remove in next major ver
 end
 
 
-if _VERSION < 'Lua 5.2' then
-  -- still create 'logging' global for Lua versions < 5.2
-  _G.logging = logging
-end
-
 -------------------------------------------------------------------------------
 -- dynamically detect proper source debug level, since this can vary by Lua versions
 -------------------------------------------------------------------------------
@@ -355,15 +391,25 @@ do
 
   while true do
     if not pcall(detect_func) then
-      getSourceLine = function() return "lualogging debug-level detection failed" end
+      -- cannot detect debug level, so set the function to fetch debug info to
+      -- return a table that always returns "na" for each lookup
+      getDebugInfoLine = "local info = setmetatable({}, { __index = function() return 'na' end })"
       break
     end
+
     if test_msg:find(detect_func_match, 1, true) then
       break -- found correct level, done
     end
     -- move to next level
     sourceDebugLevel = sourceDebugLevel + 1
+    clearCompiledCache()
   end
+end
+
+
+if _VERSION < 'Lua 5.2' then
+  -- still create 'logging' global for Lua versions < 5.2
+  _G.logging = logging
 end
 
 return logging
