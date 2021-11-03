@@ -290,7 +290,7 @@ function logging.defaultLogPatterns(patt)
     if type(patt) == "string" then
       patt = logging.buildLogPatterns({}, patt)
     end
-    assert(type(patt) ~= "table", "logPatterns must be a string or a table, got: %s", tostring(patt))
+    assert(type(patt) == "table", "logPatterns must be a string or a table, got: %s", type(patt))
     for _, level in ipairs(LEVELS) do
       if level ~= "OFF" then
         assert(type(patt[level]) == "string", "the patterns contains a '%s' value (instead of a string) for level '%s'", type(patt[level]), level)
