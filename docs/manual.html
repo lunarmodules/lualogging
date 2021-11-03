@@ -174,7 +174,24 @@ local patterns = logging.buildLogPatterns(
     only applications should. Libraries should get this logger and use it, assuming
     the application has set it.
     <pre class="example">
--- library example
+-- Example: application setting the default logger
+local color = require("ansicolors") -- https://github.com/kikito/ansicolors.lua
+local ll = require("logging")
+require "logging.console"
+ll.defaultLogger(ll.console {
+  destination = "stderr",
+  timestampPattern = "!%y-%m-%dT%H:%M:%SZ", -- ISO 8601 in UTC
+  logPatterns = {
+    [ll.DEBUG] = color("%{white}%date%{cyan} %level %message (%source)\n"),
+    [ll.INFO] = color("%{white}%date%{white} %level %message\n"),
+    [ll.WARN] = color("%{white}%date%{yellow} %level %message\n"),
+    [ll.ERROR] = color("%{white}%date%{red bright} %level %message %{cyan}(%source)\n"),
+    [ll.FATAL] = color("%{white}%date%{magenta bright} %level %message %{cyan}(%source)\n"),
+  }
+})
+
+
+-- Example: library using default if available (fallback to nop)
 local log do
   local ll = package.loaded.logging
   if ll and type(ll) == "table" and ll.defaultLogger and
