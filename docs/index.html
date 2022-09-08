@@ -123,14 +123,14 @@ downloads page or installed via LuaRocks.
     simply pass any log messages on to the nginx log. When using LuaLogging in OpenResty, configure this logger.</dd>
     <dd><strong>Added</strong>: application level defaults. New functions <code>logging.defaultLogPatterns()</code>
       , <code>logging.defaultTimestampPattern()</code>, <code>logging.defaultLevel()</code>, and <code>logging.defaultLogger()</code>
-      can be used to get/set the global application level defaults.</br>
+      can be used to get/set the global application level defaults.<br/>
       Use carefully, this is global state, so only applications should set those, libraries should not.</dd>
     <dd><strong>Added</strong>: the included appenders now have an extra parameter to set
       log-level upon creation; <code>logLevel</code>.</dd>
-    <dd><strong>Added</strong>: the <code>logPattern</code> can now have new placeholders:</br>
-      <code>"%file"</code> (source file), </br>
-      <code>"%line"</code> (source line), </br>
-      <code>"%function"</code> (function name), and </br>
+    <dd><strong>Added</strong>: the <code>logPattern</code> can now have new placeholders:<br/>
+      <code>"%file"</code> (source file), <br/>
+      <code>"%line"</code> (source line), <br/>
+      <code>"%function"</code> (function name), and <br/>
       <code>"%source"</code> (evaluates to <code>"%file:%line in function '%function'"</code>).</dd>
     <dd><strong>Added</strong>: the console logger has a new optional parameter "destination",
       which must be either "stderr" or "stdout" (defaults to "stdout")</dd>
