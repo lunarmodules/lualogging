@@ -26,7 +26,7 @@ function logging.email(params)
   local startLevel = params.logLevel or logging.defaultLevel()
 
   return logging.new( function(self, level, message)
-    local dt = os.date(timestampPattern)
+    local dt = logging.date(timestampPattern)
     local s = logging.prepareLogMsg(logPatterns[level], dt, level, message)
     if params.headers.subject then
       params.headers.subject =
