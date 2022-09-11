@@ -19,7 +19,7 @@ function logging.socket(params, ...)
   local startLevel = params.logLevel or logging.defaultLevel()
 
   return logging.new( function(self, level, message)
-    local s = logging.prepareLogMsg(logPatterns[level], os.date(timestampPattern), level, message)
+    local s = logging.prepareLogMsg(logPatterns[level], logging.date(timestampPattern), level, message)
 
     local socket, err = socket.connect(hostname, port)
     if not socket then

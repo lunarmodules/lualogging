@@ -32,7 +32,7 @@ function logging.console(params, ...)
   local logPatterns = logging.buildLogPatterns(params.logPatterns, params.logPattern)
 
   return logging.new( function(self, level, message)
-    io[destination]:write(prepareLogMsg(logPatterns[level], os.date(timestampPattern), level, message))
+    io[destination]:write(prepareLogMsg(logPatterns[level], logging.date(timestampPattern), level, message))
     return true
   end, startLevel)
 end

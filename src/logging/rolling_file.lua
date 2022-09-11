@@ -87,7 +87,7 @@ function logging.rolling_file(params, ...)
     if not f then
       return nil, msg
     end
-    local s = logging.prepareLogMsg(logPatterns[level], os.date(timestampPattern), level, message)
+    local s = logging.prepareLogMsg(logPatterns[level], logging.date(timestampPattern), level, message)
     f:write(s)
     return true
   end, startLevel)

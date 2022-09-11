@@ -25,7 +25,7 @@ local buffer_mode do
 end
 
 local openFileLogger = function (filename, datePattern)
-  local filename = string.format(filename, os.date(datePattern))
+  local filename = string.format(filename, logging.date(datePattern))
   if (lastFileNameDatePattern ~= filename) then
     local f = io.open(filename, "a")
     if (f) then
@@ -58,7 +58,7 @@ function logging.file(params, ...)
     if not f then
       return nil, msg
     end
-    local s = logging.prepareLogMsg(logPatterns[level], os.date(timestampPattern), level, message)
+    local s = logging.prepareLogMsg(logPatterns[level], logging.date(timestampPattern), level, message)
     f:write(s)
     return true
   end, startLevel)

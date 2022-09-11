@@ -12,6 +12,7 @@ local type, table, string, _tostring, tonumber = type, table, string, tostring, 
 local select = select
 local error = error
 local format = string.format
+local floor = math.floor
 local pairs = pairs
 local ipairs = ipairs
 
@@ -236,6 +237,58 @@ do
 
   function logging.prepareLogMsg(lpattern, dpattern, level, message)
     return cache[lpattern](dpattern, level, message)
+  end
+end
+
+
+-------------------------------------------------------------------------------
+-- os.date replacement with milliseconds if supported
+-- ms placeholder = %q or %xq (where x is number of decimals)
+-------------------------------------------------------------------------------
+
+
+do
+  local gettime = os.time
+  local ok, socket = pcall(require, "socket") -- load luasocket if available
+  if ok then
+    gettime = socket.gettime
+  end
+
+  -- use a pattern cache to know if we even need ms to format
+  local patternCache = setmetatable({}, {
+    __index = function(self, patt)
+      local placeholder = patt:match("(%%%d*q)")
+      if not placeholder then
+        self[patt] = false
+        return false
+      end
+
+      local size = tonumber(placeholder:sub(2,-2)) or 3
+      assert(size >= 1 and size <= 6, "millisecond format %q quantifier range is 1 to 6")
+      self[patt] = ("0"):rep(size) -- a string to grab trailing "0"'s from
+      return self[patt]
+    end
+  })
+  function logging.date(fmt, t)
+    fmt = fmt or "%c"
+    t = t or gettime()
+    local pad = patternCache[fmt]
+    local ms
+    if pad then
+      -- ms required
+      ms = math.fmod(t,1)
+      local mss = (tostring(ms) .. pad):sub(3, -1)
+
+      fmt = fmt:gsub("(%%%d*q)", function(placeholder)
+        return mss:sub(1, #pad)
+      end)
+    end
+
+    local res, err = os.date(fmt, floor(t)) -- 5.3+ requires t to be an integer
+    if type(res) == "table" then
+      res.secf = ms or math.fmod(t,1)
+    end
+    return res, err
   end
 end
 

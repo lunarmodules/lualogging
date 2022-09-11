@@ -121,6 +121,21 @@ local patterns = logging.buildLogPatterns(
       </pre>
   </dd>
 
+  <dt><strong>date_val = logging.date([format,[time]])</strong></dt>
+  <dd>Compatible with standard Lua <code>os.date()</code> function, but supports second fractions.
+    The placeholder in the format string is <code>"%q"</code>, or <code>"%1q"</code> to <code>"%6q"</code>,
+    where the number 1-6 specifies the number of decimals. The default is 3, so <code>"%q"</code> is the same
+    as <code>"%3q"</code>. The format will always have the specified length, padded with leading and trailing 0's
+    where necessary.<br/>
+    If the pattern is <code>"*t"</code>, then the returned table will have an extra field <code>"secf"</code> that holds
+    the fractional part.<br/>
+    <br/>
+    Example: <code>"%y-%m-%d %H:%M:%S.%6q"</code><br/>
+    <br/>
+    Note: if the "time" parameter is not provided, it will try and use the LuaSocket function <code>gettime()</code>
+    to get the time. If unavailable, the fractional part will be set to 0.
+  </dd>
+
   <dt><strong>patts = logging.defaultLogPatterns([string | table])</strong></dt>
   <dd>Sets the default logPatterns (global!) if a parameter is given.
     If the parameter is a string then that string will be used as the pattern for
@@ -180,7 +195,7 @@ local ll = require("logging")
 require "logging.console"
 ll.defaultLogger(ll.console {
   destination = "stderr",
-  timestampPattern = "!%y-%m-%dT%H:%M:%SZ", -- ISO 8601 in UTC
+  timestampPattern = "!%y-%m-%dT%H:%M:%S.%qZ", -- ISO 8601 in UTC
   logPatterns = {
     [ll.DEBUG] = color("%{white}%date%{cyan} %level %message (%source)\n"),
     [ll.INFO] = color("%{white}%date%{white} %level %message\n"),
