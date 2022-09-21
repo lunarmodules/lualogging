@@ -23,14 +23,7 @@
 <div id="navigation">
 <h1>LuaLogging</h1>
   <ul>
-    <li><a href="index.html">Home</a>
-      <ul>
-        <li><a href="index.html#download">Download</a></li>
-        <li><a href="index.html#dependencies">Dependencies</a></li>
-        <li><a href="index.html#history">History</a></li>
-        <li><a href="index.html#credits">Credits</a></li>
-      </ul>
-    </li>
+    <li><a href="index.html">Home</a></li>
     <li><strong>Manual</strong>
       <ul>
         <li><a href="manual.html#installation">Installation</a></li>
@@ -45,14 +38,12 @@
         <li><a href="rolling_file.html">Rolling File</a></li>
         <li><a href="sql.html">SQL</a></li>
         <li><a href="socket.html">Socket</a></li>
+        <li><a href="rsyslog.html">Rsyslog</a></li>
         <li><a href="email.html">Email</a></li>
+        <li><a href="nginx.html">Nginx</a></li>
       </ul>
     </li>
-    <li><a href="https://github.com/lunarmodules/lualogging">Project</a>
-      <ul>
-        <li><a href="https://github.com/lunarmodules/lualogging/issues">Bug Tracker</a></li>
-      </ul>
-    </li>
+    <li><a href="https://github.com/lunarmodules/lualogging">Project</a></li>
     <li><a href="license.html">License</a></li>
   </ul>
 </div> <!-- id="navigation" -->
@@ -157,8 +148,7 @@ local patterns = logging.buildLogPatterns(
   <dt><strong>patt = logging.defaultTimestampPattern([string])</strong></dt>
   <dd>Sets the default timestampPattern (global!) if given.
     The default is <code>nil</code>, which results in a system specific date/time format.
-    The pattern should be accepted by the Lua function
-    <a href="https://www.lua.org/manual/5.1/manual.html#pdf-os.date"><code>os.date</code></a> for formatting.<br/>
+    The pattern should be accepted by the function <code>logging.date</code> for formatting.<br/>
   <br/>
     Returns the current defaultTimestampPattern value.<br/>
   <br/>
@@ -376,6 +366,7 @@ The following appenders are included in the standard distribution.
 <li><a href="rolling_file.html">Rolling File</a></li>
 <li><a href="sql.html">SQL</a></li>
 <li><a href="socket.html">Socket</a></li>
+<li><a href="rsyslog.html">Rsyslog</a></li>
 <li><a href="email.html">Email</a></li>
 <li><a href="nginx.html">Nginx/OpenResty</a></li>
 </ul>

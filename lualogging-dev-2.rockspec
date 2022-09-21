@@ -36,7 +36,8 @@ build = {
       ['logging.email']        = "src/logging/email.lua",
       ['logging.sql']          = "src/logging/sql.lua",
       ['logging.socket']       = "src/logging/socket.lua",
-      ['logging.nginx']       = "src/logging/nginx.lua",
+      ['logging.nginx']        = "src/logging/nginx.lua",
+      ['logging.rsyslog']      = "src/logging/rsyslog.lua",
     }
   },
   copy_directories = {
