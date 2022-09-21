@@ -5,7 +5,7 @@
 --
 -- @author Tiago Cesar Katcipis (tiagokatcipis@gmail.com)
 --
--- @copyright 2004-2021 Kepler Project
+-- @copyright 2004-2022 Kepler Project
 ---------------------------------------------------------------------------
 
 local logging = require"logging"

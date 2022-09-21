@@ -1,14 +1,15 @@
---- This module does something.
+-------------------------------------------------------------------------------
+-- Syslog for LuaLogging to a remote server using UDP/TCP
 --
--- Syslog for LuaLogging to a remote server using UDP/TCP.
---
--- This module differs from [`LuaSyslog`](https://github.com/lunarmodules/luasyslog)
--- in that it will log to a remote
--- server, where `LuaSyslog` will log to the local syslog daemon.
---
--- @copyright Copyright (c) 2022-2022 Thijs Schreijer
 -- @author Thijs Schreijer
--- @license MIT, see `LICENSE.md`.
+--
+-- @copyright 2004-2022 Kepler Project
+--
+-------------------------------------------------------------------------------
+
+-- This module differs from [`LuaSyslog`](https://github.com/lunarmodules/luasyslog)
+-- in that it will log to a remote server, where `LuaSyslog` will log to the local
+-- syslog daemon.
 
 
 local socket = require "socket"
