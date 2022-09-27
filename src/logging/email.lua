@@ -10,7 +10,16 @@
 local logging = require"logging"
 local smtp = require"socket.smtp"
 
-function logging.email(params)
+
+local M = setmetatable({}, {
+  __call = function(self, ...)
+    -- calling on the module instantiates a new logger
+    return self.new(...)
+  end,
+})
+
+
+function M.new(params)
   params = params or {}
   params.headers = params.headers or {}
 
@@ -44,5 +53,6 @@ function logging.email(params)
   end, startLevel)
 end
 
-return logging.email
 
+logging.email = M
+return M

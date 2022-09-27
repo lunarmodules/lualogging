@@ -10,7 +10,16 @@
 local logging = require"logging"
 local socket = require"socket"
 
-function logging.socket(params, ...)
+
+local M = setmetatable({}, {
+  __call = function(self, ...)
+    -- calling on the module instantiates a new logger
+    return self.new(...)
+  end,
+})
+
+
+function M.new(params, ...)
   params = logging.getDeprecatedParams({ "hostname", "port", "logPattern" }, params, ...)
   local hostname = params.hostname
   local port = params.port
@@ -36,5 +45,6 @@ function logging.socket(params, ...)
   end, startLevel)
 end
 
-return logging.socket
 
+logging.socket = M
+return M

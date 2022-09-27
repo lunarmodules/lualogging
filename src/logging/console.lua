@@ -11,20 +11,30 @@ local io = require"io"
 local logging = require"logging"
 local prepareLogMsg = logging.prepareLogMsg
 
-local destinations = setmetatable({
-    stdout = "stdout",
-    stderr = "stderr",
-  },
-  {
-    __index = function(self, key)
-      if not key then
-        return "stdout" -- default value
-      end
-      error("destination parameter must be either 'stderr' or 'stdout', got: "..tostring(key), 3)
-    end
-  })
 
-function logging.console(params, ...)
+local destinations = setmetatable({
+  stdout = "stdout",
+  stderr = "stderr",
+},
+{
+  __index = function(self, key)
+    if not key then
+      return "stdout" -- default value
+    end
+    error("destination parameter must be either 'stderr' or 'stdout', got: "..tostring(key), 3)
+  end
+})
+
+
+local M = setmetatable({}, {
+  __call = function(self, ...)
+    -- calling on the module instantiates a new logger
+    return self.new(...)
+  end,
+})
+
+
+function M.new(params, ...)
   params = logging.getDeprecatedParams({ "logPattern" }, params, ...)
   local startLevel = params.logLevel or logging.defaultLevel()
   local timestampPattern = params.timestampPattern or logging.defaultTimestampPattern()
@@ -37,5 +47,7 @@ function logging.console(params, ...)
   end, startLevel)
 end
 
-return logging.console
+
+logging.console = M
+return M
 
