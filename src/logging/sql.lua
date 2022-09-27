@@ -9,7 +9,16 @@
 
 local logging = require"logging"
 
-function logging.sql(params)
+
+local M = setmetatable({}, {
+  __call = function(self, ...)
+    -- calling on the module instantiates a new logger
+    return self.new(...)
+  end,
+})
+
+
+function M.new(params)
   params = params or {}
   params.tablename = params.tablename or "LogTable"
   params.logdatefield = params.logdatefield or "LogDate"
@@ -60,5 +69,7 @@ function logging.sql(params)
   end, startLevel)
 end
 
-return logging.sql
+
+logging.sql = M
+return M
 

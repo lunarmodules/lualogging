@@ -12,6 +12,7 @@ local logging = require"logging"
 local lastFileNameDatePattern
 local lastFileHandler
 
+
 local buffer_mode do
   local dir_separator = _G.package.config:sub(1,1)
   local is_windows = dir_separator == '\\'
@@ -23,6 +24,7 @@ local buffer_mode do
     buffer_mode = "line"
   end
 end
+
 
 local openFileLogger = function (filename, datePattern)
   local filename = string.format(filename, logging.date(datePattern))
@@ -41,7 +43,16 @@ local openFileLogger = function (filename, datePattern)
   end
 end
 
-function logging.file(params, ...)
+
+local M = setmetatable({}, {
+  __call = function(self, ...)
+    -- calling on the module instantiates a new logger
+    return self.new(...)
+  end,
+})
+
+
+function M.new(params, ...)
   params = logging.getDeprecatedParams({ "filename", "datePattern", "logPattern" }, params, ...)
   local filename = params.filename
   local datePattern = params.datePattern
@@ -64,5 +75,6 @@ function logging.file(params, ...)
   end, startLevel)
 end
 
-return logging.file
 
+logging.file = M
+return M
