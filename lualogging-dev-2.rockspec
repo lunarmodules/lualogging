@@ -38,6 +38,7 @@ build = {
       ['logging.socket']       = "src/logging/socket.lua",
       ['logging.nginx']        = "src/logging/nginx.lua",
       ['logging.rsyslog']      = "src/logging/rsyslog.lua",
+      ['logging.envconfig']    = "src/logging/envconfig.lua",
     }
   },
   copy_directories = {
