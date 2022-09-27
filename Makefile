@@ -16,3 +16,6 @@ install:
 
 test:
 	cd tests && ./run_tests.sh
+
+lint:
+	luacheck .
