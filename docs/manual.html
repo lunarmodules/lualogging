@@ -218,6 +218,81 @@ log:debug("starting my library")
   </dl>
 
 
+<h2><a name="environment"></a>Environment variables</h2>
+
+<p>The submodule <code>logging.envconfig</code> allows to configure the default
+logger via environment variables. This is done based on a "prefix" for the environment
+variables (with default value "LL").
+The variables are the logger options names with the prefix in all-caps separated by "_".
+So if a logger takes an option "<code>opts.logLevel</code>", then it can be configured
+using environment variable <code>LL_LOGLEVEL=warn</code>.</p>
+
+<p>The type of logger can be set using environment variable <code>LL_LOGGER=console</code>
+(assuming the default prefix "LL").</p>
+
+<p>The defaults are "LL" for the prefix, and a console logger to "stderr".</p>
+
+<p>The exposed functions:</p>
+<dl class="reference">
+  <dt><strong>envconfig.set_default_settings(prefix)</strong></dt>
+  <dd>Sets the default prefix and loads the configuration. Returns <code>true</code> on
+    success, <code>nil, "already set a default"</code> if it was called before. Will
+    throw an error if something during the configuration fails (bad user input in environment
+    variables for example).<br/>
+    This method should be called by applications at startup, to set the default prefix.
+  </dd>
+
+  <dt><strong>name, opts = envconfig.get_default_settings()</strong></dt>
+  <dd>returns the appender name (eg. "file", "console", etc), and the options table for
+    configuring the appender. The table has a metatable that will dynamically lookup
+    fields in environment variables, this ensures that any option an appender checks
+    will be read and returned.
+    Boolean and number values will be converted to their respective types (case insensitive).<br/>
+  <br/>
+    The common <code>logPatterns</code> field is a special case where each level can be
+    configured by appending the level with an "_". See example below:
+    <pre class="example">
+# set these environment variables
+export MYAPP_LOGGER="console"
+export MYAPP_LOGLEVEL="info"
+export MYAPP_LOGPATTERN = "%message"
+export MYAPP_LOGPATTERNS_DEBUG = "%message %source"
+export MYAPP_LOGPATTERNS_FATAL = "Oh my!! %message"
+
+-- Lua code (see set_default_logger for a shorter version)
+local logging = require "logging"
+local logenv = require "logging.envconfig"
+assert(logenv.set_default_settings("MYAPP"))
+local logger_name, logger_opts = logenv.get_default_settings()
+local logger = assert(require("logging."..logger_name)(logger_opts))
+logging.setdefaultLogger(logger)
+
+logger:info("configured via environment!")
+    </pre>
+  </dd>
+
+  <dt><strong>logger = envconfig.set_default_logger(prefix)</strong></dt>
+  <dd>Sets (and returns) the default logger from the environment.
+    <pre class="example">
+# set these environment variables
+export MYAPP_LOGGER="console"
+export MYAPP_LOGLEVEL="info"
+export MYAPP_LOGPATTERN = "%message"
+export MYAPP_LOGPATTERNS_DEBUG = "%message %source"
+export MYAPP_LOGPATTERNS_FATAL = "Oh my!! %message"
+
+-- Lua code
+local logenv = require "logging.envconfig"
+local logger = assert(logenv.set_default_logger("MYAPP"))
+
+logger:info("configured via environment!")
+    </pre>
+  </dd>
+
+
+</dl>
+
+
 <h2><a name="logger"></a>Logger objects</h2>
 
 <p>Logger objects are created by loading the 'appender' module, and calling on it. For example:</p>
