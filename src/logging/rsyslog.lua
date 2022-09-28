@@ -346,7 +346,7 @@ function M.new(params, ...)
     queue:add_worker(function(msg)
       local ok, err = pcall(tcp_sender, new_logger, msg)
       if not ok then
-        socket_error("lualogging rsyslog failed logging through Copas socket: "..tostring(err))
+        socket_error(new_logger, "lualogging rsyslog failed logging through Copas socket: "..tostring(err))
       end
     end)
     new_logger.queue = queue
