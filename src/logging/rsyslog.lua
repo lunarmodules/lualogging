@@ -15,6 +15,7 @@
 local socket = require "socket"
 local logging = require "logging"
 local prepareLogMsg = logging.prepareLogMsg
+local pcall = pcall
 
 
 local M = setmetatable({}, {
@@ -362,6 +363,10 @@ function M.new(params, ...)
 end
 
 function M.copas()
+  if _VERSION=="Lua 5.1" and not jit then  -- prevent yield across c-boundary
+    pcall = require("coxpcall").pcall
+  end
+
   M.tcp = copas_tcp
 end
 
