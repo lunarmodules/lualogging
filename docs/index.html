@@ -111,7 +111,7 @@ downloads page or installed via LuaRocks.
     environment variables.</dd>
     <dd><strong>Refactor</strong>: refactored the appenders to be more object like. They now return a module table.</dd>
     <dd><strong>Fix</strong>: add rsyslog appender to makefile install target.</dd>
-    <dd><strong>Fix</strong>: errorhandler in rsyslog was omitting 'self'.</dd>
+    <dd><strong>Fix</strong>: errorhandler in rsyslog was omitting 'self', and also log the failed message itself to stderr.</dd>
     <dd><strong>Fix</strong>: when using Copas and rsyslog on Lua 5.1, coxpcall is required to yield.</dd>
 
     <dt><strong>1.7.0</strong> [21/Sep/2022]</dt>

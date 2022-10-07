@@ -174,7 +174,7 @@ function M.senders.udp(self, msg, is_retry)
       assert(sock:settimeout(5))
       local ok, err = sock:setpeername(host, tonumber(port))
       if not ok then
-        return socket_error(self, "failed to connect to "..cache_key..": ".. tostring(err))
+        return socket_error(self, "failed to connect to "..cache_key..": ".. tostring(err).."\n"..tostring(msg))
       end
       -- cache it
       socket_cache[cache_key] = sock
@@ -191,7 +191,7 @@ function M.senders.udp(self, msg, is_retry)
     if not is_retry then
       return M.senders.udp(self, msg, true)
     else
-      return socket_error(self, "failed to send msg (after retry) to "..self.socket_cache_key..": ".. tostring(err))
+      return socket_error(self, "failed to send msg (after retry) to "..self.socket_cache_key..": ".. tostring(err).."\n"..tostring(msg))
     end
   end
   return true
@@ -211,11 +211,11 @@ function M.senders.tcp(self, msg, is_retry)
       assert(sock:settimeout(5))
       local ok, err = sock:connect(host, tonumber(port))
       if not ok then
-        return socket_error(self, "failed to connect to "..cache_key..": ".. tostring(err))
+        return socket_error(self, "failed to connect to "..cache_key..": ".. tostring(err).."\n"..tostring(msg))
       end
       ok, err = sock:setoption("keepalive", true)
       if not ok then
-        return socket_error(self, "failed to set keepalive for "..cache_key..": ".. tostring(err))
+        return socket_error(self, "failed to set keepalive for "..cache_key..": ".. tostring(err).."\n"..tostring(msg))
       end
       -- cache it
       socket_cache[cache_key] = sock
@@ -242,7 +242,7 @@ function M.senders.tcp(self, msg, is_retry)
       if not is_retry then
         return M.senders.tcp(self, msg, true)
       else
-        return socket_error(self, "failed to send msg (after retry) to "..self.socket_cache_key.." ("..tostring(last_send_error).." bytes sent): ".. tostring(err))
+        return socket_error(self, "failed to send msg (after retry) to "..self.socket_cache_key.." ("..tostring(last_send_error).." bytes sent): ".. tostring(err).."\n"..tostring(msg))
       end
     end
   end
@@ -347,7 +347,7 @@ function M.new(params, ...)
     queue:add_worker(function(msg)
       local ok, err = pcall(tcp_sender, new_logger, msg)
       if not ok then
-        socket_error(new_logger, "lualogging rsyslog failed logging through Copas socket: "..tostring(err))
+        socket_error(new_logger, "lualogging rsyslog failed logging through Copas socket: "..tostring(err).."\n"..tostring(msg))
       end
     end)
     new_logger.queue = queue
