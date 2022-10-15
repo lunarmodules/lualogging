@@ -113,6 +113,8 @@ downloads page or installed via LuaRocks.
     <dd><strong>Fix</strong>: add rsyslog appender to makefile install target.</dd>
     <dd><strong>Fix</strong>: errorhandler in rsyslog was omitting 'self', and also log the failed message itself to stderr.</dd>
     <dd><strong>Fix</strong>: when using Copas and rsyslog on Lua 5.1, coxpcall is required to yield.</dd>
+    <dd><strong>Fix</strong>: rsyslog; upon failure remove the closed socket from the cache to prevent the retry from using
+    the closed socket.</dd>
 
     <dt><strong>1.7.0</strong> [21/Sep/2022]</dt>
     <dd><strong>Added</strong>: new function <code>logging.date</code> is compatible with <code>os.date</code>
