@@ -187,6 +187,7 @@ function M.senders.udp(self, msg, is_retry)
   if not ok then
     sock:close()
     self.sock = nil
+    socket_cache[self.socket_cache_key] = nil
     -- recurse once; will recreate the socket and retry
     if not is_retry then
       return M.senders.udp(self, msg, true)
@@ -238,6 +239,7 @@ function M.senders.tcp(self, msg, is_retry)
     if not last_byte_send then
       sock:close()
       self.sock = nil
+      socket_cache[self.socket_cache_key] = nil
       -- recurse once; will recreate the socket and retry
       if not is_retry then
         return M.senders.tcp(self, msg, true)
