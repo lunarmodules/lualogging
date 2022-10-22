@@ -1,7 +1,11 @@
-[![build status](https://github.com/lunarmodules/lualogging/workflows/test/badge.svg)](https://github.com/lunarmodules/lualogging/actions?query=workflow%3Atest)
-
 LuaLogging
 ==========
+
+[![Test](https://img.shields.io/github/workflow/status/lunarmodules/lualogging/Test?label=Test&label=Lua)](https://github.com/lunarmodules/lualogging/actions?workflow=Test)
+[![Luacheck](https://img.shields.io/github/workflow/status/lunarmodules/lualogging/Luacheck?label=Luacheck&logo=Lua)](https://github.com/lunarmodules/lualogging/actions?workflow=Luacheck)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/lunarmodules/lualogging?label=Tag&logo=GitHub)](https://github.com/lunarmodules/lualogging/releases)
+[![Luarocks](https://img.shields.io/luarocks/v/lunarmodules/lualogging?label=Luarocks&logo=Lua)](https://luarocks.org/modules/tieske/lualogging)
+
 https://lunarmodules.github.io/lualogging/
 
 LuaLogging provides a simple API to use logging features in Lua.
