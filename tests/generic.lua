@@ -197,7 +197,7 @@ tests.format_error_stacktrace = function()
   assert(last_msg:find("in main chunk"))
   assert(last_msg:find("in %w+ 'func'"))
   local _, levels = last_msg:gsub("(|)", function() count = count + 1 end)
-  assert(levels == 3, "got : " .. levels)
+  assert(levels == 3, "got : " .. tostring(levels))
 end
 
 

@@ -37,7 +37,7 @@ end
 local rollOver = function (self)
   for i = self.maxIndex - 1, 1, -1 do
     -- files may not exist yet, lets ignore the possible errors.
-    os.rename(self.filename.."."..i, self.filename.."."..i+1)
+    os.rename(self.filename.."."..tostring(i), self.filename.."."..tostring(i+1))
   end
 
   self.file:close()
