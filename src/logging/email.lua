@@ -43,6 +43,7 @@ function M.new(params)
     end
     local msg = { headers = params.headers, body = s }
     params.source = smtp.message(msg)
+    params.port = "25"
 
     local r, e = smtp.send(params)
     if not r then

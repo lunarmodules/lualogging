@@ -193,7 +193,7 @@ function logging.compilePattern(pattern)
     ["message"] = false,
     -- truthy: requires debug info to be fetched first
     ["file"] = "info.short_src",
-    ["line"] = "info.currentline",
+    ["line"] = "tostring(info.currentline)",
     ["function"] = '(info.name or "unknown function")',
   }
   local inject_info = false
