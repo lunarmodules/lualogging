@@ -5,7 +5,7 @@
 -- @author Andre Carregal (info@keplerproject.org)
 -- @author Thiago Costa Ponte (thiago@ideais.com.br)
 --
--- @copyright 2004-2022 Kepler Project
+-- @copyright 2004-2010 Kepler Project, 2011-2013 Neopallium, 2020-2023 Thijs Schreijer
 -------------------------------------------------------------------------------
 
 local type, table, string, _tostring, tonumber = type, table, string, tostring, tonumber
@@ -18,9 +18,9 @@ local ipairs = ipairs
 
 local logging = {
   -- Meta information
-  _COPYRIGHT = "Copyright (C) 2004-2022 Kepler Project",
+  _COPYRIGHT = "Copyright (C) 2004-2010 Kepler Project, 2011-2013 Neopallium, 2020-2023 Thijs Schreijer",
   _DESCRIPTION = "A simple API to use logging features in Lua",
-  _VERSION = "LuaLogging 1.8.0",
+  _VERSION = "LuaLogging 1.8.1",
 }
 
 local LEVELS = { "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }
