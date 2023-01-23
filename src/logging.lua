@@ -39,7 +39,7 @@ local defaultLogger = nil
 local function rewrite_stacktrace()
   -- prettify stack-trace, remove lualogging entries and reformat to 1 line
   local result = ''
-  local trace = debug.traceback()
+  local trace = debug and debug.traceback() or ''
   for entry in trace:gmatch("%s*(.-)\n") do
     if entry:match("%:%d+%:") and not entry:find('logging.lua') then
       result = result .. ' | ' .. entry
@@ -179,7 +179,7 @@ end
 -- Prepares the log message
 -------------------------------------------------------------------------------
 local sourceDebugLevel = 1 -- this will be set dynamically below
-local getDebugInfoLine = "local info = debug.getinfo(%d)"
+local getDebugInfoLine = debug and "local info = debug.getinfo(%d)" or "local info = { short_src = '?', currentline = -1 }"
 
 function logging.compilePattern(pattern)
   pattern = string.format("%q", pattern)
@@ -431,7 +431,7 @@ end
 -------------------------------------------------------------------------------
 -- dynamically detect proper source debug level, since this can vary by Lua versions
 -------------------------------------------------------------------------------
-do
+if debug then
   local detection_logger, test_msg
 
   local function detect_func() detection_logger:debug("message") end -- This function MUST be on a single line!!
