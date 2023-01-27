@@ -31,7 +31,7 @@ Latest Git revision
 With LuaRocks:
 
 ```sh
-luarocks install https://github.com/lunarmodules/lualogging/raw/master/lualogging-dev-1.rockspec
+luarocks install lualogging --dev
 ```
 
 With make:
