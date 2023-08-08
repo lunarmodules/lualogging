@@ -218,7 +218,7 @@ function logging.compilePattern(pattern)
 
     end]]
 
-  return (loadstring or load)(func, "lualogging_generated_formatter")()
+  return (load)(func, "lualogging_generated_formatter")()
 end
 
 local clearCompiledCache
