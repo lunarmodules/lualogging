@@ -10,18 +10,18 @@ jobs:
       matrix:
         luaVersion: [ "5.4", "5.3", "5.2", "5.1", "luajit" ] # , "luajit-openresty" ]
         debug: ["", "_G.debug = nil"] # also run with debug lib disabled
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup ‘lua’
-        uses: leafo/gh-actions-lua@d84e7d61946edb679210088bc1378c099fde51fe # v9
+        uses: luarocks/gh-actions-lua@fc6f8de246f8c01f6e1a56a1b851143e23370ff3 # v12
         with:
           luaVersion: ${{ matrix.luaVersion }}
 
       - name: Setup ‘luarocks’
-        uses: leafo/gh-actions-luarocks@e65774a6386cb4f24e293dca7fc4ff89165b64c5 # v4
+        uses: luarocks/gh-actions-luarocks@95d2308a0aff36ad31ebadca493ed14853399842 # v7
 
       - name: Setup dependencies
         run: |
